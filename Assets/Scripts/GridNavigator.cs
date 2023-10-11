@@ -24,6 +24,8 @@ public class GridNavigator : MonoBehaviour
     public Vector3[] positions = new Vector3[8]; // Array to store the calculated positions.
 
     public float soundDistance = 300f; 
+    public AudioSource StepSource;
+    public AudioSource BoundarySource;
 
     void Start()
     {
@@ -61,6 +63,10 @@ public class GridNavigator : MonoBehaviour
         {
             speakCoordinates(); 
         }
+        else if (UnityEngine.Input.GetKeyDown(KeyCode.Q))
+        {
+            Application.Quit();
+        }
     }
 
     // Move selection to the right.
@@ -77,7 +83,11 @@ public class GridNavigator : MonoBehaviour
 
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+            StepSource.Play();
 
+        }
+        else{
+            BoundarySource.Play();
         }
     }
 
@@ -95,6 +105,10 @@ public class GridNavigator : MonoBehaviour
 
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+            StepSource.Play();
+        }
+        else{
+            BoundarySource.Play();
         }
     }
 
@@ -112,7 +126,12 @@ public class GridNavigator : MonoBehaviour
 
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+            StepSource.Play();
         }
+        else{
+            BoundarySource.Play();
+        }
+        
     }
 
     // Move selection down.
@@ -128,6 +147,10 @@ public class GridNavigator : MonoBehaviour
             currentRow++;
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+            StepSource.Play();
+        }
+        else{
+            BoundarySource.Play();
         }
     }
 
