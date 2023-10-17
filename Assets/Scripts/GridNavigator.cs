@@ -27,11 +27,28 @@ public class GridNavigator : MonoBehaviour
     public AudioSource StepSource;
     public AudioSource BoundarySource;
 
+    public Vector3 LeftSide;
+    public Vector3 RightSide;
+    public Vector3 ForwardSide;
+    public Vector3 BackSide;
+    public Vector3 Center;
+
+    public Vector3 AbsLandmark;
+
     void Start()
     {
         // Initialize the starting position.
         UpdateGridPosition(currentRow, currentColumn);
         CalculatePositions();
+
+        LeftSide = new Vector3 (-10,0,0);
+        RightSide= new Vector3 (10,0,0);
+        ForwardSide= new Vector3 (0,0,10);
+        BackSide= new Vector3 (0,0,-10);
+        Center= new Vector3 (0,0,0);
+
+        AbsLandmark= new Vector3 (10,0,4);
+        //take difference between position on grid and coordinate of landmark
 
     }
 
@@ -83,6 +100,8 @@ public class GridNavigator : MonoBehaviour
 
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+            //change step sound position
+            StepSource.transform.localPosition=RightSide;
             StepSource.Play();
 
         }
@@ -105,6 +124,7 @@ public class GridNavigator : MonoBehaviour
 
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+            StepSource.transform.localPosition=LeftSide;
             StepSource.Play();
         }
         else{
