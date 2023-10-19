@@ -122,6 +122,18 @@ public class GridManager : MonoBehaviour
         }
 
     }
+    public void speakLandmarks(int row, int cols, Transform position)
+    {
+        
+        if (row >= 0 && row < rows && cols >= 0 && cols < columns)
+        {
+            //uap.Saysomething(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
+            uap.Saysomething3D(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text, position);
+            Debug.Log(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
+        }
+
+    }
+
     IEnumerator resetGridPosition()
     {
         {

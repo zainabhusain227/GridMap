@@ -33,7 +33,7 @@ public class GridNavigator : MonoBehaviour
     public Vector3 BackSide;
     public Vector3 Center;
 
-    public Vector3 AbsLandmark;
+    public Vector3 LandmarkVect;
 
     void Start()
     {
@@ -47,7 +47,7 @@ public class GridNavigator : MonoBehaviour
         BackSide= new Vector3 (0,0,-10);
         Center= new Vector3 (0,0,0);
 
-        AbsLandmark= new Vector3 (10,0,4);
+        LandmarkVect= new Vector3 (0,0,0);
         //take difference between position on grid and coordinate of landmark
 
     }
@@ -79,6 +79,10 @@ public class GridNavigator : MonoBehaviour
         else if (UnityEngine.Input.GetKeyDown(KeyCode.P))
         {
             speakCoordinates(); 
+        }
+        else if (UnityEngine.Input.GetKeyDown(KeyCode.L))
+        {
+            speakLandmarks(); 
         }
         else if (UnityEngine.Input.GetKeyDown(KeyCode.Q))
         {
@@ -203,6 +207,44 @@ public class GridNavigator : MonoBehaviour
             }
         }*/
         StartCoroutine(waitSeconds());
+    }
+
+    public void speakLandmarks()
+    {
+        //healthcentre coordinates
+        int landmark_row=13;
+        int landmark_col=2;
+
+        //calculate relative position of landmark compared to current location
+        int row_dir= landmark_row - currentRow;
+        int col_dir= landmark_col - currentColumn;
+        LandmarkVect= new Vector3 (col_dir,0, row_dir);
+
+
+        cTTS.transform.position= parentObject.position +  LandmarkVect  * soundDistance;
+        gridManager.speakAroundMe(landmark_row, landmark_col, cTTS.transform);
+        //gridManager.CurrentGridCoord(row, col);
+
+        //gridManager.GetNeighboringAndDiagonalRowsAndColumns(currentRow, currentColumn, out neighboringRows, out neighboringColumns);
+        
+        /*
+        foreach (int itemRows in neighboringRows)
+        {
+            foreach (int itemCols in neighboringColumns)
+            {
+                gridManager.speakAroundMe(itemRows, itemCols);
+                Debug.Log("Rows/ Cols: " + itemRows + "/ " + itemCols);
+            }
+        }*/
+        //StartCoroutine(waitSeconds());
+
+        //hardcore coordinates for health centre for now
+        //int row=13;
+        //int col=2;
+        //gridManager.focusOnCurrentGrid(row, col);
+        //gridManager.CurrentGridCoord(row, col);
+        //gridManager.GetNeighboringAndDiagonalRowsAndColumns(currentRow, currentColumn, out neighboringRows, out neighboringColumns);
+        //StartCoroutine(waitSeconds());
     }
 
     public void speakCoordinates()
