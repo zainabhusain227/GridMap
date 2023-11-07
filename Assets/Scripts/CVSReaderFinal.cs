@@ -2,12 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System;
+using System.Linq;
 
 public class CVSReaderFinal : MonoBehaviour
 {
     public TextAsset csvFile; // Reference to your .csv file (drag and drop it in the Unity inspector)
     public string[,] dataArray;
     public GridManager gridManager;
+
+    public List<string> mapItems = new List<string>();
+    public List<int> mapItemRow;
+    public List<int> mapItemCol;
 
     void Start()
     {
@@ -38,6 +44,7 @@ public class CVSReaderFinal : MonoBehaviour
                 {
                     dataArray[i, j] = row[j];
                     gridManager.SetText(i, j, dataArray[i,j]);
+                    AppendIfNotExists(dataArray[i, j], i, j);
                 }
             }
         }
@@ -58,6 +65,31 @@ public class CVSReaderFinal : MonoBehaviour
             {
                 Debug.Log($"Data[{i},{j}]: {dataArray[i, j]}");
             }
+        }
+    }
+
+    // Function to append a string to a list if it doesn't exist
+    public void AppendIfNotExists(string newString, int row, int col)
+    {
+        if (string.IsNullOrEmpty(newString) || string.IsNullOrWhiteSpace(newString))
+        {
+            //Debug.Log("Empty string. Not added to the list.");
+        }
+        else if (newString == "Wall")
+        {
+            //Debug.Log("Ignoring irrelevant POI");
+        }
+        else if (!mapItems.Contains(newString))
+        {
+            mapItems.Add(newString);
+            mapItemRow.Add(row);
+            mapItemCol.Add(col);    
+
+            //Debug.Log("String appended to the list.");
+        }
+        else
+        {
+            //Debug.Log("String already exists in the list.");
         }
     }
 }
