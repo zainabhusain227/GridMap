@@ -7,6 +7,7 @@ using System.Collections;
 public class GridNavigator : MonoBehaviour
 {
     public GridManager gridManager;  // Reference to your GridManager script.
+    public CVSReaderFinal cvsRF; 
     public int currentRow = 0;      // Current row index.
     public int currentColumn = 0;   // Current column index.
     public int numberOfSteps = 0;
@@ -35,6 +36,15 @@ public class GridNavigator : MonoBehaviour
 
     public Vector3 LandmarkVect;
 
+    public bool indexMode = false;
+    public int mapItemIndex = 0;
+    public string currentMapItem;
+    public GameObject mapItemAudioSource;
+
+    public AudioClip escalators;
+    public AudioClip trainStation;
+
+
     void Start()
     {
         // Initialize the starting position.
@@ -49,45 +59,148 @@ public class GridNavigator : MonoBehaviour
 
         LandmarkVect= new Vector3 (0,0,0);
         //take difference between position on grid and coordinate of landmark
+        StartCoroutine(ExecuteEndOfFrame());
+
 
     }
 
     void Update()
     {
-
-        // Move the selection based on arrow key input.
-        if (UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            MoveRight();
-        }
-        else if (UnityEngine.Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            MoveLeft();
-        }
-        else if (UnityEngine.Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            MoveUp();
-        }
-        else if (UnityEngine.Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            MoveDown();
-        }
-        else if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
-        {
-            speakAroundMe(); 
-        }
-        else if (UnityEngine.Input.GetKeyDown(KeyCode.P))
-        {
-            speakCoordinates(); 
-        }
-        else if (UnityEngine.Input.GetKeyDown(KeyCode.L))
-        {
-            speakLandmarks(); 
-        }
-        else if (UnityEngine.Input.GetKeyDown(KeyCode.Q))
+        if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
         }
+        else if (UnityEngine.Input.GetKeyDown(KeyCode.I))
+        {
+            if (indexMode == false)
+            {
+                indexMode = true;
+                uap.Saysomething("Index mode activated");
+                mapItemIndex = 0;
+            }
+            else if (indexMode == true)
+            {
+                uap.Saysomething("Index mode deactivated");
+                indexMode = false;
+            }
+        }
+
+
+        if (indexMode ==false)
+        {
+            // Move the selection based on arrow key input.
+            if (UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                MoveRight();
+            }
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                MoveLeft();
+            }
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                MoveUp();
+            }
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                MoveDown();
+            }
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
+            {
+                speakAroundMe();
+            }
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.P))
+            {
+                speakCoordinates();
+            }
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.L))
+            {
+                speakLandmarks();
+            }
+        }
+        else if(indexMode == true)
+        {
+            /*
+            if (UnityEngine.Input.GetKeyDown(KeyCode.UpArrow) && mapItemIndex < cvsRF.mapItems.Count)
+            {
+                currentMapItem = cvsRF.mapItems[mapItemIndex];
+                uap.Saysomething(currentMapItem);
+                mapItemIndex += 1; 
+            }
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.DownArrow) && mapItemIndex > 0)
+            {
+                mapItemIndex -= 1;
+                currentMapItem = cvsRF.mapItems[mapItemIndex];
+                uap.Saysomething(currentMapItem);
+
+            }
+            else if(UnityEngine.Input.GetKeyDown(KeyCode.L))
+            {
+                Vector2Int differece = ComputeDifference(new Vector2Int(currentRow, currentColumn), new Vector2Int(cvsRF.mapItemRow[mapItemIndex], cvsRF.mapItemCol[mapItemIndex]));
+                Debug.Log(differece.ToString());
+            }*/
+            if (UnityEngine.Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                if (mapItemIndex > 0)
+                {
+                    mapItemIndex--;
+                    Debug.Log("Selected Item: " + cvsRF.mapItems[mapItemIndex]);
+                    uap.Saysomething(cvsRF.mapItems[mapItemIndex]);
+
+                }
+            }
+
+            // Move down through the list
+            if (UnityEngine.Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                if (mapItemIndex < cvsRF.mapItems.Count - 1)
+                {
+                    mapItemIndex++;
+                    Debug.Log("Selected Item: " + cvsRF.mapItems[mapItemIndex]);
+                    uap.Saysomething(cvsRF.mapItems[mapItemIndex]);
+
+                }
+            }
+            if (UnityEngine.Input.GetKeyDown(KeyCode.L))
+            {
+                Vector2Int differece = ComputeDifference(new Vector2Int(currentRow, currentColumn), new Vector2Int(cvsRF.mapItemRow[mapItemIndex], cvsRF.mapItemCol[mapItemIndex]));
+                Debug.Log(differece.ToString());
+                string vertical; 
+                string horizontal;
+                if (differece[0] <= 0)
+                {
+                    vertical = "down";
+
+                }
+                else
+                {
+                    vertical="up";
+                }
+
+                if (differece[1] <= 0) 
+                {
+                    horizontal = "right";
+                }
+                else
+                {
+                    horizontal ="left";
+                }
+                uap.Saysomething("The landmark is " + System.Math.Abs(differece[0]) + "units " + vertical + " and " + System.Math.Abs(differece[1]) + "units" + horizontal);
+                mapItemAudioSource.transform.localPosition = new Vector3(differece[0], 0, differece[1]);
+                if(cvsRF.mapItems[mapItemIndex] == "Escalator")
+                {
+                    mapItemAudioSource.GetComponent<AudioSource>().clip = escalators; 
+                }
+                else if(cvsRF.mapItems[mapItemIndex] == "Escalator")
+                {
+                    mapItemAudioSource.GetComponent<AudioSource>().clip = trainStation;
+                }
+                mapItemAudioSource.GetComponent<AudioSource>().Play();
+
+            }
+        }
+
+
     }
 
     // Move selection to the right.
@@ -289,5 +402,16 @@ public class GridNavigator : MonoBehaviour
         {
             //Debug.Log("Position " + i + ": " + positions[i]);
         }
+    }
+    private System.Collections.IEnumerator ExecuteEndOfFrame()
+    {
+        yield return new WaitForEndOfFrame(); // Waits until the end of the current frame
+        currentMapItem = cvsRF.mapItems[mapItemIndex];
+
+    }
+    // Function to compute the difference between two Vector2Int vectors
+    private Vector2Int ComputeDifference(Vector2Int vectorA, Vector2Int vectorB)
+    {
+        return vectorA - vectorB;
     }
 }
