@@ -1052,7 +1052,12 @@ MonoBehaviour:
   Center: {x: 0, y: 0, z: 0}
   LandmarkVect: {x: 0, y: 0, z: 0}
   indexMode: 0
+  subIndexMode: 0
   mapItemIndex: 0
+  salesItemIndex: 0
+  informationItemIndex: 0
+  movementItemIndex: 0
+  entrancesItemIndex: 0
   currentMapItem: 
   mapItemAudioSource: {fileID: 1927200697}
   escalators: {fileID: 0}
@@ -1081,8 +1086,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06874e82519f7b44aaa56247bab34b57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  csvFile: {fileID: 4900000, guid: 385ef9897ac5847c5a884313afcc229f, type: 3}
+  csvFile: {fileID: 4900000, guid: 0fd885c5adbb4458c8e10259b2ae9ab4, type: 3}
   gridManager: {fileID: 1058019958}
   mapItems: []
+  salesItems: []
+  entrancesItems: []
+  informationItems: []
+  movementItems: []
+  salesItemRow: 
+  salesItemCol: 
+  entrancessItemRow: 
+  entrancesItemCol: 
+  movementItemRow: 
+  movementItemCol: 
+  informationsItemRow: 
+  informationItemCol: 
   mapItemRow: 
   mapItemCol: 
