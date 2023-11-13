@@ -12,6 +12,26 @@ public class CVSReaderFinal : MonoBehaviour
     public GridManager gridManager;
 
     public List<string> mapItems = new List<string>();
+
+    public List<string> salesItems = new List<string>();
+    public List<string> entrancesItems = new List<string>();
+    public List<string> informationItems = new List<string>();
+    public List<string> movementItems = new List<string>();
+
+
+    //public List<List<string>> mapItemsMainList = new List<List<string>>();
+    public List<int> salesItemRow;
+    public List<int> salesItemCol;
+
+    public List<int> entrancessItemRow;
+    public List<int> entrancesItemCol;
+
+    public List<int> movementItemRow;
+    public List<int> movementItemCol;
+
+    public List<int> informationsItemRow;
+    public List<int> informationItemCol;
+
     public List<int> mapItemRow;
     public List<int> mapItemCol;
 
@@ -28,12 +48,12 @@ public class CVSReaderFinal : MonoBehaviour
             string[] lines = csvFile.text.Split('\n');
             //int numRows = 26;
             //int numCols = 26;
-            
+
             int numRows = lines.Length; // for some reason, converting from excel to CSV adds an extra line
             int numCols = lines[0].Split(',').Length;
             Debug.Log("Rows: " + numRows);
             Debug.Log("Columns: " + numCols);
-            
+
             dataArray = new string[numRows, numCols];
 
             for (int i = 0; i < numRows; i++)
@@ -43,7 +63,7 @@ public class CVSReaderFinal : MonoBehaviour
                 for (int j = 0; j < numCols; j++)
                 {
                     dataArray[i, j] = row[j];
-                    gridManager.SetText(i, j, dataArray[i,j]);
+                    gridManager.SetText(i, j, dataArray[i, j]);
                     AppendIfNotExists(dataArray[i, j], i, j);
                 }
             }
@@ -67,29 +87,67 @@ public class CVSReaderFinal : MonoBehaviour
             }
         }
     }
+    
 
-    // Function to append a string to a list if it doesn't exist
     public void AppendIfNotExists(string newString, int row, int col)
     {
-        if (string.IsNullOrEmpty(newString) || string.IsNullOrWhiteSpace(newString))
+        if (newString.Contains(";"))
         {
-            //Debug.Log("Empty string. Not added to the list.");
-        }
-        else if (newString == "Wall")
-        {
-            //Debug.Log("Ignoring irrelevant POI");
-        }
-        else if (!mapItems.Contains(newString))
-        {
-            mapItems.Add(newString);
-            mapItemRow.Add(row);
-            mapItemCol.Add(col);    
+            string mainItem = newString.Substring(0, newString.IndexOf(";"));
+            string subItem = newString.Substring(newString.IndexOf(";") + 1);
 
-            //Debug.Log("String appended to the list.");
-        }
-        else
-        {
-            //Debug.Log("String already exists in the list.");
+            if (!mapItems.Contains(mainItem))
+            {
+                mapItems.Add(mainItem);
+                //mapItemRow.Add(row);
+                //mapItemCol.Add(col);
+            }
+            
+            
+            if (mainItem == "Sales")
+            {
+                if (!salesItems.Contains(subItem))
+                {
+                    salesItems.Add(subItem);
+                    salesItemRow.Add(row);
+                    salesItemCol.Add(col);
+                }
+
+            }
+            else if (mainItem == "Entrances")
+            {
+                if (!entrancesItems.Contains(subItem))
+                {
+                    entrancesItems.Add(subItem);
+                    entrancessItemRow.Add(row);
+                    entrancesItemCol.Add(col);
+                }
+
+            }
+            else if (mainItem == "Movement")
+            {
+                if (!movementItems.Contains(subItem))
+                {
+                    movementItems.Add(subItem);
+                    movementItemRow.Add(row);
+                    movementItemCol.Add(col);
+                }
+
+            }
+            else if (mainItem == "Information")
+            {
+                if (!informationItems.Contains(subItem))
+                {
+                    informationItems.Add(subItem);
+                    informationsItemRow.Add(row);
+                    informationItemCol.Add(col);
+                }
+
+            }
+            
+            
         }
     }
+
+       
 }

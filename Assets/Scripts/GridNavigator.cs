@@ -37,13 +37,23 @@ public class GridNavigator : MonoBehaviour
     public Vector3 LandmarkVect;
 
     public bool indexMode = false;
+    public bool subIndexMode = false;
     public int mapItemIndex = 0;
+
+    public int salesItemIndex;
+    public int informationItemIndex;
+    public int movementItemIndex;
+    public int entrancesItemIndex;
+
+
     public string currentMapItem;
     public GameObject mapItemAudioSource;
 
     public AudioClip escalators;
     public AudioClip trainStation;
 
+    int itemRow;
+    int itemCol; 
 
     void Start()
     {
@@ -75,7 +85,7 @@ public class GridNavigator : MonoBehaviour
             if (indexMode == false)
             {
                 indexMode = true;
-                uap.Saysomething("Index mode activated");
+                uap.Saysomething("Index mode activated, first index: Entrances");
                 mapItemIndex = 0;
             }
             else if (indexMode == true)
@@ -118,27 +128,9 @@ public class GridNavigator : MonoBehaviour
                 speakLandmarks();
             }
         }
-        else if(indexMode == true)
+        else if(indexMode == true && subIndexMode == false)
         {
-            /*
-            if (UnityEngine.Input.GetKeyDown(KeyCode.UpArrow) && mapItemIndex < cvsRF.mapItems.Count)
-            {
-                currentMapItem = cvsRF.mapItems[mapItemIndex];
-                uap.Saysomething(currentMapItem);
-                mapItemIndex += 1; 
-            }
-            else if (UnityEngine.Input.GetKeyDown(KeyCode.DownArrow) && mapItemIndex > 0)
-            {
-                mapItemIndex -= 1;
-                currentMapItem = cvsRF.mapItems[mapItemIndex];
-                uap.Saysomething(currentMapItem);
 
-            }
-            else if(UnityEngine.Input.GetKeyDown(KeyCode.L))
-            {
-                Vector2Int differece = ComputeDifference(new Vector2Int(currentRow, currentColumn), new Vector2Int(cvsRF.mapItemRow[mapItemIndex], cvsRF.mapItemCol[mapItemIndex]));
-                Debug.Log(differece.ToString());
-            }*/
             if (UnityEngine.Input.GetKeyDown(KeyCode.UpArrow))
             {
                 if (mapItemIndex > 0)
@@ -161,11 +153,163 @@ public class GridNavigator : MonoBehaviour
 
                 }
             }
-            if (UnityEngine.Input.GetKeyDown(KeyCode.L))
+
+            // Move down through the list
+            if (UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
             {
-                Vector2Int differece = ComputeDifference(new Vector2Int(currentRow, currentColumn), new Vector2Int(cvsRF.mapItemRow[mapItemIndex], cvsRF.mapItemCol[mapItemIndex]));
+                subIndexMode = true;
+                salesItemIndex = 0;
+                informationItemIndex = 0;
+                movementItemIndex = 0;
+                entrancesItemIndex = 0;
+
+                if (cvsRF.mapItems[mapItemIndex] == "Sales")
+                {
+                    uap.Saysomething("Sales selected, first sub index: Ticket counter GO VIA");
+
+                }
+                else if (cvsRF.mapItems[mapItemIndex] == "Entrances")
+                {
+                    uap.Saysomething("Entrances selected, first sub index: Stairs Bay concourse down to GO trains");
+
+
+                }
+                else if (cvsRF.mapItems[mapItemIndex] == "Movement")
+                {
+
+                    uap.Saysomething("Movement selected, first sub index: Escalator Down Bay concourse to GO trains");
+
+                }
+                else if (cvsRF.mapItems[mapItemIndex] == "Information")
+                {
+                    uap.Saysomething("Information selected, first sub index: VIA information area");
+
+                }
+            }
+            
+
+
+        }
+        else if(subIndexMode == true && indexMode == true)
+        {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                subIndexMode = false;
+                mapItemIndex = 0;
+                uap.Saysomething("Back to main indexes");
+            }
+
+  
+            // Move up through the list
+            if (UnityEngine.Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                if (cvsRF.mapItems[mapItemIndex] == "Sales")
+                {
+                    if (salesItemIndex > 0)
+                    {
+                        salesItemIndex--;
+                        uap.Saysomething(cvsRF.salesItems[salesItemIndex]);
+                    }
+
+                }
+                else if (cvsRF.mapItems[mapItemIndex] == "Entrances")
+                {
+                    if (entrancesItemIndex > 0)
+                    {
+                        entrancesItemIndex--;
+                        uap.Saysomething(cvsRF.entrancesItems[entrancesItemIndex]);
+                    }
+                }
+                else if (cvsRF.mapItems[mapItemIndex] == "Movement")
+                {
+
+                    if (movementItemIndex > 0)
+                    {
+                        movementItemIndex--;
+                        uap.Saysomething(cvsRF.movementItems[movementItemIndex]);
+                    }
+                }
+                else if (cvsRF.mapItems[mapItemIndex] == "Information")
+                {
+                    if (informationItemIndex > 0)
+                    {
+                        informationItemIndex--;
+                        uap.Saysomething(cvsRF.informationItems[informationItemIndex]);
+                    }
+                }
+
+            }
+            // Move down through the list
+            if (UnityEngine.Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                if (cvsRF.mapItems[mapItemIndex] == "Sales")
+                {
+                    if (salesItemIndex < cvsRF.salesItems.Count - 1)
+                    {
+                        salesItemIndex++;
+                        uap.Saysomething(cvsRF.salesItems[salesItemIndex]);
+                    }
+
+                }
+                else if (cvsRF.mapItems[mapItemIndex] == "Entrances")
+                {
+                    if (entrancesItemIndex < cvsRF.entrancesItems.Count - 1)
+                    {
+                        entrancesItemIndex++;
+                        uap.Saysomething(cvsRF.entrancesItems[entrancesItemIndex]);
+                    }
+                }
+                else if (cvsRF.mapItems[mapItemIndex] == "Movement")
+                {
+
+                    if (movementItemIndex < cvsRF.movementItems.Count - 1)
+                    {
+                        movementItemIndex++;
+                        uap.Saysomething(cvsRF.movementItems[movementItemIndex]);
+                    }
+                }
+                else if (cvsRF.mapItems[mapItemIndex] == "Information")
+                {
+                    if (informationItemIndex < cvsRF.informationItems.Count - 1)
+                    {
+                        informationItemIndex++;
+                        uap.Saysomething(cvsRF.informationItems[informationItemIndex]);
+                    }
+                }
+
+            }
+
+
+
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Return))
+            {
+                if (cvsRF.mapItems[mapItemIndex] == "Sales")
+                {
+                     itemRow = cvsRF.salesItemRow[salesItemIndex];
+                     itemCol = cvsRF.salesItemCol[salesItemIndex];
+
+                }
+                else if (cvsRF.mapItems[mapItemIndex] == "Entrances")
+                {
+                     itemRow = cvsRF.entrancessItemRow[entrancesItemIndex];
+                     itemCol = cvsRF.entrancesItemCol[entrancesItemIndex];
+                }
+                else if (cvsRF.mapItems[mapItemIndex] == "Movement")
+                {
+
+                     itemRow = cvsRF.movementItemRow[movementItemIndex];
+                     itemCol = cvsRF.movementItemCol[movementItemIndex];
+                }
+                else if (cvsRF.mapItems[mapItemIndex] == "Information")
+                {
+                     itemRow = cvsRF.informationsItemRow[informationItemIndex];
+                     itemCol = cvsRF.informationItemCol[informationItemIndex];
+                }
+
+
+                Vector2Int differece = ComputeDifference(new Vector2Int(currentRow, currentColumn), new Vector2Int(itemRow, itemCol));
                 Debug.Log(differece.ToString());
-                string vertical; 
+                string vertical;
                 string horizontal;
                 if (differece[0] <= 0)
                 {
@@ -174,28 +318,20 @@ public class GridNavigator : MonoBehaviour
                 }
                 else
                 {
-                    vertical="up";
+                    vertical = "up";
                 }
 
-                if (differece[1] <= 0) 
+                if (differece[1] <= 0)
                 {
                     horizontal = "right";
                 }
                 else
                 {
-                    horizontal ="left";
+                    horizontal = "left";
                 }
                 uap.Saysomething("The landmark is " + System.Math.Abs(differece[0]) + "units " + vertical + " and " + System.Math.Abs(differece[1]) + "units" + horizontal);
                 mapItemAudioSource.transform.localPosition = new Vector3(differece[0], 0, differece[1]);
-                if(cvsRF.mapItems[mapItemIndex] == "Escalator")
-                {
-                    mapItemAudioSource.GetComponent<AudioSource>().clip = escalators; 
-                }
-                else if(cvsRF.mapItems[mapItemIndex] == "Escalator")
-                {
-                    mapItemAudioSource.GetComponent<AudioSource>().clip = trainStation;
-                }
-                mapItemAudioSource.GetComponent<AudioSource>().Play();
+
 
             }
         }
@@ -367,13 +503,14 @@ public class GridNavigator : MonoBehaviour
 
     IEnumerator waitSeconds()
     {
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 20; i++)
         {
 
-            //Debug.Log("Rows/ Cols: " + neighboringRows[i] + "/ " + neighboringColumns[i]);
-            cTTS.transform.position = positions[i];
+            Debug.Log("Rows/ Cols: " + neighboringRows[i] + "/ " + neighboringColumns[i]);
+            Debug.Log("i = " + i);
+            //cTTS.transform.position = positions[i];
             gridManager.speakAroundMe(neighboringRows[i], neighboringColumns[i], cTTS.transform);
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1);
 
         }
         //yield on a new YieldInstruction that waits for 2 seconds.
@@ -383,7 +520,7 @@ public class GridNavigator : MonoBehaviour
     {
         if (parentObject == null)
         {
-            Debug.LogWarning("ParentObject not assigned.");
+            Debug.LogWarning("Parent Object not assigned.");
             return;
         }
 
