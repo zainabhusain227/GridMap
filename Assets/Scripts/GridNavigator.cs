@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Windows;
 using System.Collections;
-
+using System;
 
 public class GridNavigator : MonoBehaviour
 {
@@ -53,7 +53,14 @@ public class GridNavigator : MonoBehaviour
     public AudioClip trainStation;
 
     int itemRow;
-    int itemCol; 
+    int itemCol;
+
+    private int mainListIndex = 0;
+    private string selectedMainItem;
+
+    private int sublistIndex = 0;
+    private string selectedSubItem;
+    private bool inSublist = false;
 
     void Start()
     {
@@ -85,7 +92,7 @@ public class GridNavigator : MonoBehaviour
             if (indexMode == false)
             {
                 indexMode = true;
-                uap.Saysomething("Index mode activated, first index: Entrances");
+                uap.Saysomething("Index mode activated, first index: " + cvsRF.mainList[0]);
                 mapItemIndex = 0;
             }
             else if (indexMode == true)
@@ -96,7 +103,7 @@ public class GridNavigator : MonoBehaviour
         }
 
 
-        if (indexMode ==false)
+        if (indexMode == false)
         {
             // Move the selection based on arrow key input.
             if (UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
@@ -128,214 +135,11 @@ public class GridNavigator : MonoBehaviour
                 speakLandmarks();
             }
         }
-        else if(indexMode == true && subIndexMode == false)
+        else if(indexMode == true)
         {
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                if (mapItemIndex > 0)
-                {
-                    mapItemIndex--;
-                    Debug.Log("Selected Item: " + cvsRF.mapItems[mapItemIndex]);
-                    uap.Saysomething(cvsRF.mapItems[mapItemIndex]);
-
-                }
-            }
-
-            // Move down through the list
-            if (UnityEngine.Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                if (mapItemIndex < cvsRF.mapItems.Count - 1)
-                {
-                    mapItemIndex++;
-                    Debug.Log("Selected Item: " + cvsRF.mapItems[mapItemIndex]);
-                    uap.Saysomething(cvsRF.mapItems[mapItemIndex]);
-
-                }
-            }
-
-            // Move down through the list
-            if (UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                subIndexMode = true;
-                salesItemIndex = 0;
-                informationItemIndex = 0;
-                movementItemIndex = 0;
-                entrancesItemIndex = 0;
-
-                if (cvsRF.mapItems[mapItemIndex] == "Sales")
-                {
-                    uap.Saysomething("Sales selected, first sub index: Ticket counter GO VIA");
-
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Entrances")
-                {
-                    uap.Saysomething("Entrances selected, first sub index: Stairs Bay concourse down to GO trains");
-
-
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Movement")
-                {
-
-                    uap.Saysomething("Movement selected, first sub index: Escalator Down Bay concourse to GO trains");
-
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Information")
-                {
-                    uap.Saysomething("Information selected, first sub index: VIA information area");
-
-                }
-            }
-            
-
-
+            HandleInput();
+            //DisplayCurrentSelection();
         }
-        else if(subIndexMode == true && indexMode == true)
-        {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                subIndexMode = false;
-                mapItemIndex = 0;
-                uap.Saysomething("Back to main indexes");
-            }
-
-  
-            // Move up through the list
-            if (UnityEngine.Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                if (cvsRF.mapItems[mapItemIndex] == "Sales")
-                {
-                    if (salesItemIndex > 0)
-                    {
-                        salesItemIndex--;
-                        uap.Saysomething(cvsRF.salesItems[salesItemIndex]);
-                    }
-
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Entrances")
-                {
-                    if (entrancesItemIndex > 0)
-                    {
-                        entrancesItemIndex--;
-                        uap.Saysomething(cvsRF.entrancesItems[entrancesItemIndex]);
-                    }
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Movement")
-                {
-
-                    if (movementItemIndex > 0)
-                    {
-                        movementItemIndex--;
-                        uap.Saysomething(cvsRF.movementItems[movementItemIndex]);
-                    }
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Information")
-                {
-                    if (informationItemIndex > 0)
-                    {
-                        informationItemIndex--;
-                        uap.Saysomething(cvsRF.informationItems[informationItemIndex]);
-                    }
-                }
-
-            }
-            // Move down through the list
-            if (UnityEngine.Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                if (cvsRF.mapItems[mapItemIndex] == "Sales")
-                {
-                    if (salesItemIndex < cvsRF.salesItems.Count - 1)
-                    {
-                        salesItemIndex++;
-                        uap.Saysomething(cvsRF.salesItems[salesItemIndex]);
-                    }
-
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Entrances")
-                {
-                    if (entrancesItemIndex < cvsRF.entrancesItems.Count - 1)
-                    {
-                        entrancesItemIndex++;
-                        uap.Saysomething(cvsRF.entrancesItems[entrancesItemIndex]);
-                    }
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Movement")
-                {
-
-                    if (movementItemIndex < cvsRF.movementItems.Count - 1)
-                    {
-                        movementItemIndex++;
-                        uap.Saysomething(cvsRF.movementItems[movementItemIndex]);
-                    }
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Information")
-                {
-                    if (informationItemIndex < cvsRF.informationItems.Count - 1)
-                    {
-                        informationItemIndex++;
-                        uap.Saysomething(cvsRF.informationItems[informationItemIndex]);
-                    }
-                }
-
-            }
-
-
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Return))
-            {
-                if (cvsRF.mapItems[mapItemIndex] == "Sales")
-                {
-                     itemRow = cvsRF.salesItemRow[salesItemIndex];
-                     itemCol = cvsRF.salesItemCol[salesItemIndex];
-
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Entrances")
-                {
-                     itemRow = cvsRF.entrancessItemRow[entrancesItemIndex];
-                     itemCol = cvsRF.entrancesItemCol[entrancesItemIndex];
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Movement")
-                {
-
-                     itemRow = cvsRF.movementItemRow[movementItemIndex];
-                     itemCol = cvsRF.movementItemCol[movementItemIndex];
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Information")
-                {
-                     itemRow = cvsRF.informationsItemRow[informationItemIndex];
-                     itemCol = cvsRF.informationItemCol[informationItemIndex];
-                }
-
-
-                Vector2Int differece = ComputeDifference(new Vector2Int(currentRow, currentColumn), new Vector2Int(itemRow, itemCol));
-                Debug.Log(differece.ToString());
-                string vertical;
-                string horizontal;
-                if (differece[0] <= 0)
-                {
-                    vertical = "down";
-
-                }
-                else
-                {
-                    vertical = "up";
-                }
-
-                if (differece[1] <= 0)
-                {
-                    horizontal = "right";
-                }
-                else
-                {
-                    horizontal = "left";
-                }
-                uap.Saysomething("The landmark is " + System.Math.Abs(differece[0]) + "units " + vertical + " and " + System.Math.Abs(differece[1]) + "units" + horizontal);
-                mapItemAudioSource.transform.localPosition = new Vector3(differece[0], 0, differece[1]);
-
-
-            }
-        }
-
 
     }
 
@@ -543,12 +347,120 @@ public class GridNavigator : MonoBehaviour
     private System.Collections.IEnumerator ExecuteEndOfFrame()
     {
         yield return new WaitForEndOfFrame(); // Waits until the end of the current frame
-        currentMapItem = cvsRF.mapItems[mapItemIndex];
+        //currentMapItem = cvsRF.mapItems[mapItemIndex];
 
     }
     // Function to compute the difference between two Vector2Int vectors
     private Vector2Int ComputeDifference(Vector2Int vectorA, Vector2Int vectorB)
     {
         return vectorA - vectorB;
+    }
+   
+    void HandleInput()
+    {
+        if (UnityEngine.Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            if (inSublist)
+            {
+                // Navigate within the sublist
+                sublistIndex = Mathf.Max(0, sublistIndex - 1);
+                uap.Saysomething(cvsRF.subLists[selectedMainItem][sublistIndex]);
+
+            }
+            else
+            {
+                // Navigate within the main list
+                mainListIndex = Mathf.Max(0, mainListIndex - 1);
+                selectedMainItem = cvsRF.mainList[mainListIndex];
+                uap.Saysomething(selectedMainItem);
+            }
+
+        }
+        else if (UnityEngine.Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            if (inSublist)
+            {
+                // Navigate within the sublist
+                if (cvsRF.subLists.ContainsKey(selectedMainItem) && sublistIndex < cvsRF.subLists[selectedMainItem].Count - 1)
+                {
+                    sublistIndex++;
+                    uap.Saysomething(cvsRF.subLists[selectedMainItem][sublistIndex]);
+                }
+            }
+            else
+            {
+                // Navigate within the main list
+                if (mainListIndex < cvsRF.mainList.Count - 1)
+                {
+                    mainListIndex++;
+                    selectedMainItem = cvsRF.mainList[mainListIndex];
+                    uap.Saysomething(selectedMainItem);
+                }
+            }
+        }
+        else if (UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            // Enter the sublist
+            if (cvsRF.subLists.ContainsKey(selectedMainItem) && cvsRF.subLists[selectedMainItem].Count > 0)
+            {
+                inSublist = true;
+                uap.Saysomething(cvsRF.mainList[mainListIndex] + " selected. First sub index: " + (cvsRF.subLists[selectedMainItem][sublistIndex]));
+            }
+        }
+        else if (UnityEngine.Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            // Go back to the main list
+            inSublist = false;
+            sublistIndex = 0;
+            uap.Saysomething(selectedMainItem); // Optional: Say something when going back to the main list
+        }
+        if (UnityEngine.Input.GetKeyDown(KeyCode.Return) && inSublist)
+        {
+            Tuple<int, int> tuple = cvsRF.subListPositions[cvsRF.subLists[selectedMainItem][sublistIndex]];
+
+            // Access individual elements of the tuple
+            int row = tuple.Item1;
+            int column = tuple.Item2;
+
+            // Now you can use 'row' and 'column' as needed
+;
+            Vector2Int differece = ComputeDifference(new Vector2Int(currentRow, currentColumn), new Vector2Int(row, column));
+            Debug.Log(differece.ToString());
+            string vertical;
+            string horizontal;
+            if (differece[0] <= 0)
+            {
+                vertical = "down";
+
+            }
+            else
+            {
+                vertical = "up";
+            }
+
+            if (differece[1] <= 0)
+            {
+                horizontal = "right";
+            }
+            else
+            {
+                horizontal = "left";
+            }
+            uap.Saysomething("The landmark is " + System.Math.Abs(differece[0]) + "units " + vertical + " and " + System.Math.Abs(differece[1]) + "units" + horizontal);
+            mapItemAudioSource.transform.localPosition = new Vector3(differece[0], 0, differece[1]);
+        }
+
+        
+    }
+    void DisplayCurrentSelection()
+    {
+        if (inSublist)
+        {
+            Debug.Log($"Selected Sublist Item: {cvsRF.subLists[selectedMainItem][sublistIndex]}");
+        }
+        else
+        {
+            Debug.Log($"Selected Main Item: {selectedMainItem}");
+        }
     }
 }

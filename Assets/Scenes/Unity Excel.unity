@@ -568,8 +568,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cubePrefab: {fileID: 5168896013252453959, guid: 9bb010e1370c04e4cb2c2bcc324eff9c, type: 3}
-  rows: 21
-  columns: 40
+  rows: 22
+  columns: 45
   coord: 
   uap: {fileID: 1861858091}
   cTTS: {fileID: 1125664233}
@@ -1089,6 +1089,7 @@ MonoBehaviour:
   csvFile: {fileID: 4900000, guid: 0fd885c5adbb4458c8e10259b2ae9ab4, type: 3}
   gridManager: {fileID: 1058019958}
   mapItems: []
+  mainList: []
   salesItems: []
   entrancesItems: []
   informationItems: []

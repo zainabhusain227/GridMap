@@ -5,13 +5,28 @@ using System.IO;
 using System;
 using System.Linq;
 
+public class SublistData
+{
+    public List<string> SubItems { get; set; }
+    public int Row { get; set; }
+    public int Column { get; set; }
+}
+
 public class CVSReaderFinal : MonoBehaviour
 {
     public TextAsset csvFile; // Reference to your .csv file (drag and drop it in the Unity inspector)
     public string[,] dataArray;
     public GridManager gridManager;
 
-    public List<string> mapItems = new List<string>();
+    //public List<string> mapItems = new List<string>();
+    
+    public List<string> mainList = new List<string>();
+    public Dictionary<string, List<string>> subLists = new Dictionary<string, List<string>>();
+    public Dictionary<string, Tuple<int, int>> subListPositions = new Dictionary<string, Tuple<int, int>>();
+
+    //public Dictionary<string, SublistData> subLists = new Dictionary<string, SublistData>();
+
+    /*
 
     public List<string> salesItems = new List<string>();
     public List<string> entrancesItems = new List<string>();
@@ -19,7 +34,6 @@ public class CVSReaderFinal : MonoBehaviour
     public List<string> movementItems = new List<string>();
 
 
-    //public List<List<string>> mapItemsMainList = new List<List<string>>();
     public List<int> salesItemRow;
     public List<int> salesItemCol;
 
@@ -34,11 +48,12 @@ public class CVSReaderFinal : MonoBehaviour
 
     public List<int> mapItemRow;
     public List<int> mapItemCol;
-
+    */
     void Start()
     {
         LoadCSV();
-        //PrintData();
+        //PrintMain_SubList();
+        //PrintSubListPositions();
     }
 
     void LoadCSV()
@@ -46,13 +61,10 @@ public class CVSReaderFinal : MonoBehaviour
         if (csvFile != null)
         {
             string[] lines = csvFile.text.Split('\n');
-            //int numRows = 26;
-            //int numCols = 26;
-
-            int numRows = lines.Length; // for some reason, converting from excel to CSV adds an extra line
+            int numRows = lines.Length - 1; // for some reason, converting from excel to CSV adds an extra line ***************************************** may have to subtract 1 or not
             int numCols = lines[0].Split(',').Length;
-            Debug.Log("Rows: " + numRows);
-            Debug.Log("Columns: " + numCols);
+            Debug.Log("Total number of Rows: " + numRows);
+            Debug.Log("Total number of Columns: " + numCols);
 
             dataArray = new string[numRows, numCols];
 
@@ -64,7 +76,8 @@ public class CVSReaderFinal : MonoBehaviour
                 {
                     dataArray[i, j] = row[j];
                     gridManager.SetText(i, j, dataArray[i, j]);
-                    AppendIfNotExists(dataArray[i, j], i, j);
+                    //AppendIfNotExists(dataArray[i, j], i, j);
+                    StoreStrings(dataArray[i, j], i, j);
                 }
             }
         }
@@ -73,81 +86,75 @@ public class CVSReaderFinal : MonoBehaviour
             Debug.LogError("CSV file is not assigned!");
         }
     }
-
-    void PrintData()
+    public void StoreStrings(string inputString, int row, int column)
     {
-        int numRows = dataArray.GetLength(0);
-        int numCols = dataArray.GetLength(1);
-
-        for (int i = 0; i < numRows; i++)
+        if (inputString.Contains(";"))
         {
-            for (int j = 0; j < numCols; j++)
+            string[] substrings = inputString.Split(';');
+            //Debug.Log(substrings[0] + " | " + substrings[1]);
+            if (substrings.Length >= 2)
             {
-                Debug.Log($"Data[{i},{j}]: {dataArray[i, j]}");
+                string mainItem = substrings[0];
+                string subItem = substrings[1];
+
+                // Store in main list
+                if (!mainList.Contains(mainItem))
+                {
+                    mainList.Add(mainItem);
+                }
+
+                // Store in sublist
+                if (!subLists.ContainsKey(mainItem))
+                {
+                    subLists[mainItem] = new List<string>();
+                }
+                if (!subLists[mainItem].Contains(subItem))
+                {
+                    subLists[mainItem].Add(subItem);
+                    subListPositions[subItem] = Tuple.Create(row, column);
+
+                }
+            }
+            else
+            {
+                // Handle invalid input
+                Console.WriteLine("Invalid input string format.");
             }
         }
+
     }
-    
-
-    public void AppendIfNotExists(string newString, int row, int col)
+    public void PrintMain_SubList()
     {
-        if (newString.Contains(";"))
+        Debug.Log("Main List:");
+        foreach (var mainItem in mainList)
         {
-            string mainItem = newString.Substring(0, newString.IndexOf(";"));
-            string subItem = newString.Substring(newString.IndexOf(";") + 1);
+            Debug.Log($"- {mainItem}");
 
-            if (!mapItems.Contains(mainItem))
+            if (subLists.ContainsKey(mainItem))
             {
-                mapItems.Add(mainItem);
-                //mapItemRow.Add(row);
-                //mapItemCol.Add(col);
-            }
-            
-            
-            if (mainItem == "Sales")
-            {
-                if (!salesItems.Contains(subItem))
+                Debug.Log("  Sublist:");
+
+                foreach (var subItem in subLists[mainItem])
                 {
-                    salesItems.Add(subItem);
-                    salesItemRow.Add(row);
-                    salesItemCol.Add(col);
+                    Debug.Log($"  - {subItem}");
                 }
-
             }
-            else if (mainItem == "Entrances")
-            {
-                if (!entrancesItems.Contains(subItem))
-                {
-                    entrancesItems.Add(subItem);
-                    entrancessItemRow.Add(row);
-                    entrancesItemCol.Add(col);
-                }
+            Debug.Log("DONE ****************************************************************");
+        }
+        Debug.Log(subListPositions);
+    }
+    // Method to print all data in the subListPositions dictionary
+    void PrintSubListPositions()
+    {
+        foreach (var kvp in subListPositions)
+        {
+            string key = kvp.Key;
+            Tuple<int, int> value = kvp.Value;
 
-            }
-            else if (mainItem == "Movement")
-            {
-                if (!movementItems.Contains(subItem))
-                {
-                    movementItems.Add(subItem);
-                    movementItemRow.Add(row);
-                    movementItemCol.Add(col);
-                }
+            int firstValue = value.Item1;
+            int secondValue = value.Item2;
 
-            }
-            else if (mainItem == "Information")
-            {
-                if (!informationItems.Contains(subItem))
-                {
-                    informationItems.Add(subItem);
-                    informationsItemRow.Add(row);
-                    informationItemCol.Add(col);
-                }
-
-            }
-            
-            
+           Debug.Log($"Key: {key}, Value: ({firstValue}, {secondValue})");
         }
     }
-
-       
 }
