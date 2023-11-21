@@ -40,10 +40,7 @@ public class GridNavigator : MonoBehaviour
     public bool subIndexMode = false;
     public int mapItemIndex = 0;
 
-    public int salesItemIndex;
-    public int informationItemIndex;
-    public int movementItemIndex;
-    public int entrancesItemIndex;
+
 
 
     public string currentMapItem;
@@ -365,6 +362,10 @@ public class GridNavigator : MonoBehaviour
                 // Navigate within the sublist
                 sublistIndex = Mathf.Max(0, sublistIndex - 1);
                 uap.Saysomething(cvsRF.subLists[selectedMainItem][sublistIndex]);
+                if(sublistIndex == 0)
+                {
+                    BoundarySource.Play();
+                }
 
             }
             else
@@ -373,7 +374,12 @@ public class GridNavigator : MonoBehaviour
                 mainListIndex = Mathf.Max(0, mainListIndex - 1);
                 selectedMainItem = cvsRF.mainList[mainListIndex];
                 uap.Saysomething(selectedMainItem);
+                if (mainListIndex == 0)
+                {
+                    BoundarySource.Play();
+                }
             }
+            
 
         }
         else if (UnityEngine.Input.GetKeyDown(KeyCode.DownArrow))
@@ -386,6 +392,10 @@ public class GridNavigator : MonoBehaviour
                     sublistIndex++;
                     uap.Saysomething(cvsRF.subLists[selectedMainItem][sublistIndex]);
                 }
+                else
+                {
+                    BoundarySource.Play();
+                }
             }
             else
             {
@@ -395,6 +405,10 @@ public class GridNavigator : MonoBehaviour
                     mainListIndex++;
                     selectedMainItem = cvsRF.mainList[mainListIndex];
                     uap.Saysomething(selectedMainItem);
+                }
+                else
+                {
+                    BoundarySource.Play();
                 }
             }
         }

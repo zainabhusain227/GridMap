@@ -24,31 +24,6 @@ public class CVSReaderFinal : MonoBehaviour
     public Dictionary<string, List<string>> subLists = new Dictionary<string, List<string>>();
     public Dictionary<string, Tuple<int, int>> subListPositions = new Dictionary<string, Tuple<int, int>>();
 
-    //public Dictionary<string, SublistData> subLists = new Dictionary<string, SublistData>();
-
-    /*
-
-    public List<string> salesItems = new List<string>();
-    public List<string> entrancesItems = new List<string>();
-    public List<string> informationItems = new List<string>();
-    public List<string> movementItems = new List<string>();
-
-
-    public List<int> salesItemRow;
-    public List<int> salesItemCol;
-
-    public List<int> entrancessItemRow;
-    public List<int> entrancesItemCol;
-
-    public List<int> movementItemRow;
-    public List<int> movementItemCol;
-
-    public List<int> informationsItemRow;
-    public List<int> informationItemCol;
-
-    public List<int> mapItemRow;
-    public List<int> mapItemCol;
-    */
     void Start()
     {
         LoadCSV();
@@ -85,6 +60,7 @@ public class CVSReaderFinal : MonoBehaviour
         {
             Debug.LogError("CSV file is not assigned!");
         }
+
     }
     public void StoreStrings(string inputString, int row, int column)
     {
@@ -139,7 +115,8 @@ public class CVSReaderFinal : MonoBehaviour
                     Debug.Log($"  - {subItem}");
                 }
             }
-            Debug.Log("DONE ****************************************************************");
+            // print a seperator 
+            Debug.Log("****************************************************************");
         }
         Debug.Log(subListPositions);
     }
