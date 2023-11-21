@@ -107,8 +107,32 @@ public class GridNavigator : MonoBehaviour
 
         if (indexMode == false)
         {
+            if (UnityEngine.Input.GetKey(KeyCode.LeftControl) && UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                JumpRight();
+                Debug.Log("Jumping right");
+            }
+            else if (UnityEngine.Input.GetKey(KeyCode.LeftControl) && UnityEngine.Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                JumpLeft();
+                Debug.Log("Jumping left");
+
+            }
+            else if (UnityEngine.Input.GetKey(KeyCode.LeftControl) && UnityEngine.Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                JumpUp();
+
+                Debug.Log("Jumping up");
+
+            }
+            else if (UnityEngine.Input.GetKey(KeyCode.LeftControl) && UnityEngine.Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                JumpDown();
+                Debug.Log("Jumping down");
+
+            }
             // Move the selection based on arrow key input.
-            if (UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
             {
                 MoveRight();
             }
@@ -143,8 +167,125 @@ public class GridNavigator : MonoBehaviour
             //DisplayCurrentSelection();
         }
 
+    }   
+    void JumpRight()
+    {
+        string currentString = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text; // Store current item
+        Debug.Log(currentString);
+
+        if (numberOfSteps != 1)
+        {
+            gridManager.defocusOnPreviousGrid(currentRow, currentColumn);
+        }
+
+        // Check if moving to the right exceeds the grid boundaries
+        while (currentColumn < gridManager.columns - 1)
+        {
+            currentColumn++;
+
+            // Check if the next grid cell has a different text
+            if (gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != currentString)
+            {
+                break;
+            }
+        }
+
+        UpdateGridPosition(currentRow, currentColumn);
+        gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+
+        // Change step sound position
+        StepSource.transform.localPosition = RightSide;
+        StepSource.Play();
+    }
+    void JumpLeft()
+    {
+        string currentString = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
+        Debug.Log(currentString);
+
+        if (numberOfSteps != 1)
+        {
+            gridManager.defocusOnPreviousGrid(currentRow, currentColumn);
+        }
+
+        // Check if moving to the left exceeds the grid boundaries
+        while (currentColumn > 0)
+        {
+            currentColumn--;
+
+            // Check if the next grid cell has a different text
+            if (gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != currentString)
+            {
+                break;
+            }
+        }
+
+        UpdateGridPosition(currentRow, currentColumn);
+        gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+
+        // Change step sound position
+        StepSource.transform.localPosition = LeftSide;
+        StepSource.Play();
     }
 
+    void JumpDown()
+    {
+        string currentString = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
+        Debug.Log(currentString);
+
+        if (numberOfSteps != 1)
+        {
+            gridManager.defocusOnPreviousGrid(currentRow, currentColumn);
+        }
+
+        // Check if moving up exceeds the grid boundaries
+        while (currentRow < gridManager.rows - 1)
+        {
+            currentRow++;
+
+            // Check if the next grid cell has a different text
+            if (gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != currentString)
+            {
+                break;
+            }
+        }
+
+        UpdateGridPosition(currentRow, currentColumn);
+        gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+
+        // Change step sound position
+        StepSource.transform.localPosition = ForwardSide;
+        StepSource.Play();
+    }
+
+    void JumpUp()
+    {
+        string currentString = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
+        Debug.Log(currentString);
+
+        if (numberOfSteps != 1)
+        {
+            gridManager.defocusOnPreviousGrid(currentRow, currentColumn);
+        }
+
+        // Check if moving down exceeds the grid boundaries
+        while (currentRow > 0)
+        {
+            currentRow--;
+
+            // Check if the next grid cell has a different text
+            if (gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != currentString)
+            {
+                break;
+            }
+        }
+
+        UpdateGridPosition(currentRow, currentColumn);
+        gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+
+        // Change step sound position
+        StepSource.transform.localPosition = BackSide;
+        StepSource.Play();
+    }
     // Move selection to the right.
     void MoveRight()
     {
@@ -160,15 +301,15 @@ public class GridNavigator : MonoBehaviour
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
             //change step sound position
-            StepSource.transform.localPosition=RightSide;
+            StepSource.transform.localPosition = RightSide;
             StepSource.Play();
 
         }
-        else{
+        else
+        {
             BoundarySource.Play();
         }
     }
-
     // Move selection to the left.
     void MoveLeft()
     {
@@ -471,16 +612,17 @@ public class GridNavigator : MonoBehaviour
         }
         else if(UnityEngine.Input.GetKeyDown(KeyCode.Return) && inSublist && returnKeyPressed)
         {
-            uap.Saysomething("Teleporting to landmark: " + cvsRF.subLists[selectedMainItem][sublistIndex]);
             gridManager.defocusOnPreviousGrid(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(row, column);
             currentColumn = column;
             currentRow = row;
             returnKeyPressed=false;
-            indexMode = false; 
+            indexMode = false;
+            uap.Saysomething("Teleporting to : " + cvsRF.subLists[selectedMainItem][sublistIndex]);
+
         }
 
-        
+
     }
     void DisplayCurrentSelection()
     {
