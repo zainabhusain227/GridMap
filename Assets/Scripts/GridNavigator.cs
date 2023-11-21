@@ -52,12 +52,17 @@ public class GridNavigator : MonoBehaviour
     int itemRow;
     int itemCol;
 
+    int row;
+    int column; 
+
     private int mainListIndex = 0;
     private string selectedMainItem;
 
     private int sublistIndex = 0;
     private string selectedSubItem;
     private bool inSublist = false;
+
+    private bool returnKeyPressed = false;
 
     void Start()
     {
@@ -428,13 +433,13 @@ public class GridNavigator : MonoBehaviour
             sublistIndex = 0;
             uap.Saysomething(selectedMainItem); // Optional: Say something when going back to the main list
         }
-        if (UnityEngine.Input.GetKeyDown(KeyCode.Return) && inSublist)
+        if (UnityEngine.Input.GetKeyDown(KeyCode.Return) && inSublist && !returnKeyPressed)
         {
             Tuple<int, int> tuple = cvsRF.subListPositions[cvsRF.subLists[selectedMainItem][sublistIndex]];
 
             // Access individual elements of the tuple
-            int row = tuple.Item1;
-            int column = tuple.Item2;
+            row = tuple.Item1;
+            column = tuple.Item2;
 
             // Now you can use 'row' and 'column' as needed
 ;
@@ -460,8 +465,19 @@ public class GridNavigator : MonoBehaviour
             {
                 horizontal = "left";
             }
-            uap.Saysomething("The landmark is " + System.Math.Abs(differece[0]) + "units " + vertical + " and " + System.Math.Abs(differece[1]) + "units" + horizontal);
+            uap.Saysomething("The landmark " + cvsRF.subLists[selectedMainItem][sublistIndex] + " is " + System.Math.Abs(differece[0]) + " units " + vertical + " and " + System.Math.Abs(differece[1]) + " units" + horizontal +". Press enter again to teleport to this position.");
+            returnKeyPressed = true;
             mapItemAudioSource.transform.localPosition = new Vector3(differece[0], 0, differece[1]);
+        }
+        else if(UnityEngine.Input.GetKeyDown(KeyCode.Return) && inSublist && returnKeyPressed)
+        {
+            uap.Saysomething("Teleporting to landmark: " + cvsRF.subLists[selectedMainItem][sublistIndex]);
+            gridManager.defocusOnPreviousGrid(currentRow, currentColumn);
+            gridManager.focusOnCurrentGrid(row, column);
+            currentColumn = column;
+            currentRow = row;
+            returnKeyPressed=false;
+            indexMode = false; 
         }
 
         
