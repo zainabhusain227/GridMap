@@ -60,6 +60,14 @@ public class CVSReaderFinal : MonoBehaviour
         {
             Debug.LogError("CSV file is not assigned!");
         }
+        // Sort mainList alphabetically
+        mainList.Sort();
+
+        // Sort sublists alphabetically
+        foreach (var sublist in subLists.Values)
+        {
+            sublist.Sort();
+        }
 
     }
     public void StoreStrings(string inputString, int row, int column)
