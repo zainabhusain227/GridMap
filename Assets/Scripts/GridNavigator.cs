@@ -25,7 +25,9 @@ public class GridNavigator : MonoBehaviour
     public Vector3[] positions = new Vector3[8]; // Array to store the calculated positions.
 
     public float soundDistance = 300f; 
-    public AudioSource StepSource;
+    public AudioSource StepSourceLeftRight;
+    public AudioSource StepSourceUpDown;
+
     public AudioSource BoundarySource;
 
     public Vector3 LeftSide;
@@ -168,10 +170,40 @@ public class GridNavigator : MonoBehaviour
         }
 
     }   
+    /*
     void JumpRight()
     {
         string currentString = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text; // Store current item
         Debug.Log(currentString);
+        StepSourceLeftRight.transform.localPosition = RightSide;  // Change step sound position
+
+        if (numberOfSteps != 1)
+        {
+            gridManager.defocusOnPreviousGrid(currentRow, currentColumn);
+        }
+
+        // Check if moving to the right exceeds the grid boundaries
+        while (currentColumn < gridManager.columns - 1)
+        {
+            currentColumn++;
+            PlayAudioAndWait(StepSourceLeftRight);
+
+            // Check if the next grid cell has a different text
+            if (gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != currentString)
+            {
+                break;
+            }
+        }
+
+        UpdateGridPosition(currentRow, currentColumn);
+        gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+    }
+    */
+    void JumpRight()
+    {
+        string currentString = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text; // Store current item
+        Debug.Log(currentString);
+        StepSourceLeftRight.transform.localPosition = RightSide;  // Change step sound position
 
         if (numberOfSteps != 1)
         {
@@ -183,6 +215,9 @@ public class GridNavigator : MonoBehaviour
         {
             currentColumn++;
 
+            float delay = 0.1f * currentColumn; // Adjust the delay as needed
+            Invoke("PlayAudioLR", delay);
+
             // Check if the next grid cell has a different text
             if (gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != currentString)
             {
@@ -192,15 +227,13 @@ public class GridNavigator : MonoBehaviour
 
         UpdateGridPosition(currentRow, currentColumn);
         gridManager.focusOnCurrentGrid(currentRow, currentColumn);
-
-        // Change step sound position
-        StepSource.transform.localPosition = RightSide;
-        StepSource.Play();
     }
+
     void JumpLeft()
     {
         string currentString = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
         Debug.Log(currentString);
+        StepSourceLeftRight.transform.localPosition = LeftSide;
 
         if (numberOfSteps != 1)
         {
@@ -211,7 +244,8 @@ public class GridNavigator : MonoBehaviour
         while (currentColumn > 0)
         {
             currentColumn--;
-
+            float delay = 0.1f * Math.Abs(currentColumn); // Adjust the delay as needed
+            Invoke("PlayAudioLR", delay);
             // Check if the next grid cell has a different text
             if (gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != currentString)
             {
@@ -223,14 +257,14 @@ public class GridNavigator : MonoBehaviour
         gridManager.focusOnCurrentGrid(currentRow, currentColumn);
 
         // Change step sound position
-        StepSource.transform.localPosition = LeftSide;
-        StepSource.Play();
+        //StepSourceLeftRight.Play();
     }
 
     void JumpDown()
     {
         string currentString = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
         Debug.Log(currentString);
+        StepSourceUpDown.transform.localPosition = ForwardSide;
 
         if (numberOfSteps != 1)
         {
@@ -241,7 +275,8 @@ public class GridNavigator : MonoBehaviour
         while (currentRow < gridManager.rows - 1)
         {
             currentRow++;
-
+            float delay = 0.2f * Math.Abs(currentRow); // Adjust the delay as needed
+            Invoke("PlayAudioUD", delay);
             // Check if the next grid cell has a different text
             if (gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != currentString)
             {
@@ -253,14 +288,14 @@ public class GridNavigator : MonoBehaviour
         gridManager.focusOnCurrentGrid(currentRow, currentColumn);
 
         // Change step sound position
-        StepSource.transform.localPosition = ForwardSide;
-        StepSource.Play();
+        //StepSourceUpDown.Play();
     }
 
     void JumpUp()
     {
         string currentString = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
         Debug.Log(currentString);
+        StepSourceUpDown.transform.localPosition = BackSide;
 
         if (numberOfSteps != 1)
         {
@@ -271,7 +306,8 @@ public class GridNavigator : MonoBehaviour
         while (currentRow > 0)
         {
             currentRow--;
-
+            float delay = 0.2f * Math.Abs(currentRow); // Adjust the delay as needed
+            Invoke("PlayAudioUD", delay);
             // Check if the next grid cell has a different text
             if (gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != currentString)
             {
@@ -283,8 +319,7 @@ public class GridNavigator : MonoBehaviour
         gridManager.focusOnCurrentGrid(currentRow, currentColumn);
 
         // Change step sound position
-        StepSource.transform.localPosition = BackSide;
-        StepSource.Play();
+        //StepSourceUpDown.Play();
     }
     // Move selection to the right.
     void MoveRight()
@@ -301,8 +336,8 @@ public class GridNavigator : MonoBehaviour
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
             //change step sound position
-            StepSource.transform.localPosition = RightSide;
-            StepSource.Play();
+            StepSourceLeftRight.transform.localPosition = RightSide;
+            StepSourceLeftRight.Play();
 
         }
         else
@@ -324,8 +359,8 @@ public class GridNavigator : MonoBehaviour
 
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
-            StepSource.transform.localPosition=LeftSide;
-            StepSource.Play();
+            StepSourceLeftRight.transform.localPosition=LeftSide;
+            StepSourceLeftRight.Play();
         }
         else{
             BoundarySource.Play();
@@ -346,7 +381,7 @@ public class GridNavigator : MonoBehaviour
 
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
-            StepSource.Play();
+            StepSourceUpDown.Play();
         }
         else{
             BoundarySource.Play();
@@ -367,7 +402,7 @@ public class GridNavigator : MonoBehaviour
             currentRow++;
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
-            StepSource.Play();
+            StepSourceUpDown.Play();
         }
         else{
             BoundarySource.Play();
@@ -634,5 +669,28 @@ public class GridNavigator : MonoBehaviour
         {
             Debug.Log($"Selected Main Item: {selectedMainItem}");
         }
+    }
+    private void PlayAudioAndWait(AudioSource audioSource)
+    {
+        // Play the audio clip
+        audioSource.Play();
+
+        // Use Invoke to schedule stopping the audio after the clip length
+        Invoke("StopAudio", audioSource.clip.length);
+    }
+
+    private void StopAudio()
+    {
+        // Stop the audio after the clip length
+        StepSourceLeftRight.Stop();
+    }
+    // Function to play audio
+    void PlayAudioLR()
+    {
+        PlayAudioAndWait(StepSourceLeftRight);
+    }
+    void PlayAudioUD()
+    {
+        PlayAudioAndWait(StepSourceUpDown);
     }
 }
