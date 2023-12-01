@@ -7,7 +7,7 @@ using System;
 public class GridNavigator : MonoBehaviour
 {
     public GridManager gridManager;  // Reference to your GridManager script.
-    public CVSReaderFinal cvsRF; 
+    public CSVReaderFinal cvsRF; 
     public int currentRow = 0;      // Current row index.
     public int currentColumn = 0;   // Current column index.
     public int numberOfSteps = 0;

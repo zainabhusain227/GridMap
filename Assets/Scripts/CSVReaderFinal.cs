@@ -12,7 +12,7 @@ public class SublistData
     public int Column { get; set; }
 }
 
-public class CVSReaderFinal : MonoBehaviour
+public class CSVReaderFinal : MonoBehaviour
 {
     public TextAsset csvFile; // Reference to your .csv file (drag and drop it in the Unity inspector)
     public string[,] dataArray;
