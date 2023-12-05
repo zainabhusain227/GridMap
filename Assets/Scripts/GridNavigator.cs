@@ -7,6 +7,8 @@ using System.Collections;
 public class GridNavigator : MonoBehaviour
 {
     public GridManager gridManager;  // Reference to your GridManager script.
+
+    public SoundManager soundManager;  // Reference to your SoundManager script.
     public CVSReaderFinal cvsRF; 
     public int currentRow = 0;      // Current row index.
     public int currentColumn = 0;   // Current column index.
@@ -27,6 +29,7 @@ public class GridNavigator : MonoBehaviour
     public float soundDistance = 300f; 
     public AudioSource StepSource;
     public AudioSource BoundarySource;
+    public AudioSource TrainSource;
 
     public Vector3 LeftSide;
     public Vector3 RightSide;
@@ -35,6 +38,8 @@ public class GridNavigator : MonoBehaviour
     public Vector3 Center;
 
     public Vector3 LandmarkVect;
+
+    public Vector3 AmbientVect;
 
     public bool indexMode = false;
     public int mapItemIndex = 0;
@@ -58,8 +63,10 @@ public class GridNavigator : MonoBehaviour
         Center= new Vector3 (0,0,0);
 
         LandmarkVect= new Vector3 (0,0,0);
+        AmbientVect= new Vector3 (0,0,0);
         //take difference between position on grid and coordinate of landmark
         StartCoroutine(ExecuteEndOfFrame());
+        //soundManager = GameObject.Find("MainFrame and Controller").GetComponent<SoundManager>();
 
 
     }
@@ -116,6 +123,10 @@ public class GridNavigator : MonoBehaviour
             else if (UnityEngine.Input.GetKeyDown(KeyCode.L))
             {
                 speakLandmarks();
+            }
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.A))
+            {
+                speakAmbientSounds();
             }
         }
         else if(indexMode == true)
@@ -220,6 +231,7 @@ public class GridNavigator : MonoBehaviour
             //change step sound position
             StepSource.transform.localPosition=RightSide;
             StepSource.Play();
+            UpdateAllSoundManagers(currentRow, currentColumn);
 
         }
         else{
@@ -243,6 +255,7 @@ public class GridNavigator : MonoBehaviour
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
             StepSource.transform.localPosition=LeftSide;
             StepSource.Play();
+            UpdateAllSoundManagers(currentRow, currentColumn);
         }
         else{
             BoundarySource.Play();
@@ -264,6 +277,7 @@ public class GridNavigator : MonoBehaviour
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
             StepSource.Play();
+            UpdateAllSoundManagers(currentRow, currentColumn);
         }
         else{
             BoundarySource.Play();
@@ -285,6 +299,7 @@ public class GridNavigator : MonoBehaviour
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
             StepSource.Play();
+            UpdateAllSoundManagers(currentRow, currentColumn);
         }
         else{
             BoundarySource.Play();
@@ -359,6 +374,27 @@ public class GridNavigator : MonoBehaviour
         //gridManager.GetNeighboringAndDiagonalRowsAndColumns(currentRow, currentColumn, out neighboringRows, out neighboringColumns);
         //StartCoroutine(waitSeconds());
     }
+    public void speakAmbientSounds()
+    {
+        /*make a list of all the cells that are assigned ambient sound, 
+        for each ambientsound, calculate relative position
+        if distance is less than 5 squares, speak sound.
+        */
+        //healthcentre coordinates
+        int train_row=2;
+        int train_col=10;
+
+        //calculate relative position of landmark compared to current location
+        int row_dir= train_row - currentRow;
+        int col_dir= train_col - currentColumn;
+        AmbientVect= new Vector3 (col_dir,0, row_dir);
+
+
+        cTTS.transform.position= parentObject.position +  AmbientVect  * soundDistance;
+        //gridManager.speakAroundMe(train_row, train_col, cTTS.transform);
+        TrainSource.transform.localPosition=AmbientVect;
+        TrainSource.Play(); //replace with train sound? idk each one has to be assigned seperately I guess
+    }
 
     public void speakCoordinates()
     {
@@ -413,5 +449,15 @@ public class GridNavigator : MonoBehaviour
     private Vector2Int ComputeDifference(Vector2Int vectorA, Vector2Int vectorB)
     {
         return vectorA - vectorB;
+    }
+
+    public void UpdateAllSoundManagers(int currentRow, int currentColumn)
+    {
+        //for length of ambient sound list
+        for (int i=0; i< cvsRF.ListofGridsWithAmbient.Count; i++)
+        {
+            cvsRF.ListofGridsWithAmbient[i].GetComponent<SoundManager>().UpdateSoundPosition(currentRow, currentColumn);
+        }
+
     }
 }

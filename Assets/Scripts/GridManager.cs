@@ -74,6 +74,7 @@ public class GridManager : MonoBehaviour
     public void CurrentGridCoord(int row, int column)
     {
         grid[row, column].gameObject.GetComponent<Image>().color = Color.red;
+        //ascii number to letter
         coord= column.ToString() + " " + row.ToString();
         uap.Saysomething(coord);
     }
@@ -145,4 +146,10 @@ public class GridManager : MonoBehaviour
         //yield on a new YieldInstruction that waits for 2 seconds.
     }
 
+    public void UpdateAllAmbientSounds(){
+        //for each element in the list:
+            //list[i].UpdateSoundPosition();
+    }
+
 }
+
