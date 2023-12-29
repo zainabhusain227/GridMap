@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -75,7 +76,13 @@ public class GridManager : MonoBehaviour
     {
         grid[row, column].gameObject.GetComponent<Image>().color = Color.red;
         //ascii number to letter
-        coord= column.ToString() + " " + row.ToString();
+        if (column< 0 || column > 25)
+        {
+            throw new ArgumentOutOfRangeException("Number must be between 0 and 25 inclusive.");
+        }
+
+        char col_char = (char)('A' + column);
+        coord = col_char.ToString() + " " + row.ToString();
         uap.Saysomething(coord);
     }
     public void focusOnCurrentGrid(int row, int column)
