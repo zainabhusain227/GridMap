@@ -12,7 +12,6 @@ public class GridManager : MonoBehaviour
     public int columns = 5;        // Number of columns in the grid.
     public string coord;        // Number of columns in the grid.
     public UAP_AccessibilityManager uap;
-
     public GameObject cTTS;
 
 
@@ -88,7 +87,28 @@ public class GridManager : MonoBehaviour
     public void focusOnCurrentGrid(int row, int column)
     {
         grid[row, column].gameObject.GetComponent<Image>().color = Color.red;
-        uap.Saysomething(grid[row, column].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
+        string originalText = grid[row, column].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
+        int delimiterIndex = originalText.IndexOfAny(new char[] { ';', '#' });
+
+        if (delimiterIndex != -1)
+        {
+            char foundDelimiter = originalText[delimiterIndex];
+
+            // Extract the text after the delimiter
+            string textAfterDelimiter = originalText.Substring(delimiterIndex + 1).Trim();
+
+            // Use the extracted text or perform operations as needed
+            uap.Saysomething(textAfterDelimiter);
+
+            // If you want to know which delimiter was found, use foundDelimiter
+            // For example:
+            // Console.WriteLine("Delimiter found: " + foundDelimiter);
+        }
+        else
+        {
+            uap.Saysomething(grid[row, column].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
+
+        }
     }
     public void defocusOnPreviousGrid(int row, int column)
     {
@@ -104,7 +124,7 @@ public class GridManager : MonoBehaviour
         grid[row, column].gameObject.GetComponent<Image>().color = Color.white;
     }
     // Function to get neighboring and diagonal rows and columns around a given row and column.
-    public void GetNeighboringAndDiagonalRowsAndColumns(int currentRow, int currentColumn, out int[] neighboringRows, out int[] neighboringColumns)
+    public void GetNeighboringAndDiagonalRowsAndColumnsOld(int currentRow, int currentColumn, out int[] neighboringRows, out int[] neighboringColumns)
     {
         int[] rowOffsets = { -1, -1, -1, 0, 1, 1, 1, 0 }; // Up, Up-Right, Right, Down-Right, Down, Down-Left, Left, Up-Left
         int[] colOffsets = { -1, 0, 1, 1, 1, 0, -1, -1 }; // Up, Up-Right, Right, Down-Right, Down, Down-Left, Left, Up-Left
@@ -120,13 +140,57 @@ public class GridManager : MonoBehaviour
             neighboringColumns[i] = currentColumn + colOffsets[i];
         }
     }
+    public void GetNeighboringAndDiagonalRowsAndColumns(int currentRow, int currentColumn, out int[] neighboringRows, out int[] neighboringColumns)
+    {
+        int[] rowOffsets = { -3, -3, -3, -2, -2, -2, -1, -1, -1, 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3 };
+        int[] colOffsets = { -3, -2, -1, -3, -2, -1, -3, -2, -1, -3, -2, -1, -3, -2, -1, -3, -2, -1, -3, -2, -1 };
+
+        int numNeighbors = rowOffsets.Length;
+
+        neighboringRows = new int[numNeighbors];
+        neighboringColumns = new int[numNeighbors];
+
+        for (int i = 0; i < numNeighbors; i++)
+        {
+            neighboringRows[i] = currentRow + rowOffsets[i];
+            neighboringColumns[i] = currentColumn + colOffsets[i];
+        }
+    }
+
     public void speakAroundMe(int row, int cols, Transform position)
     {
         if (row >= 0 && row < rows && cols >= 0 && cols < columns)
         {
+            // following is the new code
+            string originalText = grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
+            int delimiterIndex = originalText.IndexOfAny(new char[] { ';', '#' });
+
+            if (delimiterIndex != -1)
+            {
+                char foundDelimiter = originalText[delimiterIndex];
+
+                // Extract the text after the delimiter
+                string textAfterDelimiter = originalText.Substring(delimiterIndex + 1).Trim();
+
+                // Use the extracted text or perform operations as needed
+                uap.Saysomething(textAfterDelimiter);
+
+                // If you want to know which delimiter was found, use foundDelimiter
+                // For example:
+                // Console.WriteLine("Delimiter found: " + foundDelimiter);
+            }
+            else
+            {
+                uap.Saysomething(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
+
+            }
+
+
+            /* original code
             //uap.Saysomething(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
             uap.Saysomething3D(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text, position);
             Debug.Log(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
+            */
         }
 
     }
