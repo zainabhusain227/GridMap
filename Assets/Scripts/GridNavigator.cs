@@ -2,12 +2,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Windows;
 using System.Collections;
-
+using System;
 
 public class GridNavigator : MonoBehaviour
 {
     public GridManager gridManager;  // Reference to your GridManager script.
-    public CVSReaderFinal cvsRF; 
+    public CSVReaderFinal cvsRF; 
     public int currentRow = 0;      // Current row index.
     public int currentColumn = 0;   // Current column index.
     public int numberOfSteps = 0;
@@ -25,7 +25,9 @@ public class GridNavigator : MonoBehaviour
     public Vector3[] positions = new Vector3[8]; // Array to store the calculated positions.
 
     public float soundDistance = 300f; 
-    public AudioSource StepSource;
+    public AudioSource StepSourceLeftRight;
+    public AudioSource StepSourceUpDown;
+
     public AudioSource BoundarySource;
 
     public Vector3 LeftSide;
@@ -40,10 +42,7 @@ public class GridNavigator : MonoBehaviour
     public bool subIndexMode = false;
     public int mapItemIndex = 0;
 
-    public int salesItemIndex;
-    public int informationItemIndex;
-    public int movementItemIndex;
-    public int entrancesItemIndex;
+
 
 
     public string currentMapItem;
@@ -53,7 +52,19 @@ public class GridNavigator : MonoBehaviour
     public AudioClip trainStation;
 
     int itemRow;
-    int itemCol; 
+    int itemCol;
+
+    int row;
+    int column; 
+
+    private int mainListIndex = 0;
+    private string selectedMainItem;
+
+    private int sublistIndex = 0;
+    private string selectedSubItem;
+    private bool inSublist = false;
+
+    private bool returnKeyPressed = false;
 
     void Start()
     {
@@ -85,7 +96,7 @@ public class GridNavigator : MonoBehaviour
             if (indexMode == false)
             {
                 indexMode = true;
-                uap.Saysomething("Index mode activated, first index: Entrances");
+                uap.Saysomething("Index mode activated, first index: " + cvsRF.mainList[0]);
                 mapItemIndex = 0;
             }
             else if (indexMode == true)
@@ -96,10 +107,34 @@ public class GridNavigator : MonoBehaviour
         }
 
 
-        if (indexMode ==false)
+        if (indexMode == false)
         {
+            if (UnityEngine.Input.GetKey(KeyCode.LeftControl) && UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                JumpRight();
+                Debug.Log("Jumping right");
+            }
+            else if (UnityEngine.Input.GetKey(KeyCode.LeftControl) && UnityEngine.Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                JumpLeft();
+                Debug.Log("Jumping left");
+
+            }
+            else if (UnityEngine.Input.GetKey(KeyCode.LeftControl) && UnityEngine.Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                JumpUp();
+
+                Debug.Log("Jumping up");
+
+            }
+            else if (UnityEngine.Input.GetKey(KeyCode.LeftControl) && UnityEngine.Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                JumpDown();
+                Debug.Log("Jumping down");
+
+            }
             // Move the selection based on arrow key input.
-            if (UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
             {
                 MoveRight();
             }
@@ -128,217 +163,164 @@ public class GridNavigator : MonoBehaviour
                 speakLandmarks();
             }
         }
-        else if(indexMode == true && subIndexMode == false)
+        else if(indexMode == true)
         {
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                if (mapItemIndex > 0)
-                {
-                    mapItemIndex--;
-                    Debug.Log("Selected Item: " + cvsRF.mapItems[mapItemIndex]);
-                    uap.Saysomething(cvsRF.mapItems[mapItemIndex]);
-
-                }
-            }
-
-            // Move down through the list
-            if (UnityEngine.Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                if (mapItemIndex < cvsRF.mapItems.Count - 1)
-                {
-                    mapItemIndex++;
-                    Debug.Log("Selected Item: " + cvsRF.mapItems[mapItemIndex]);
-                    uap.Saysomething(cvsRF.mapItems[mapItemIndex]);
-
-                }
-            }
-
-            // Move down through the list
-            if (UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                subIndexMode = true;
-                salesItemIndex = 0;
-                informationItemIndex = 0;
-                movementItemIndex = 0;
-                entrancesItemIndex = 0;
-
-                if (cvsRF.mapItems[mapItemIndex] == "Sales")
-                {
-                    uap.Saysomething("Sales selected, first sub index: Ticket counter GO VIA");
-
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Entrances")
-                {
-                    uap.Saysomething("Entrances selected, first sub index: Stairs Bay concourse down to GO trains");
-
-
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Movement")
-                {
-
-                    uap.Saysomething("Movement selected, first sub index: Escalator Down Bay concourse to GO trains");
-
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Information")
-                {
-                    uap.Saysomething("Information selected, first sub index: VIA information area");
-
-                }
-            }
-            
-
-
+            HandleInput();
+            //DisplayCurrentSelection();
         }
-        else if(subIndexMode == true && indexMode == true)
+
+    }   
+    /*
+    void JumpRight()
+    {
+        string currentString = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text; // Store current item
+        Debug.Log(currentString);
+        StepSourceLeftRight.transform.localPosition = RightSide;  // Change step sound position
+
+        if (numberOfSteps != 1)
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.LeftArrow))
+            gridManager.defocusOnPreviousGrid(currentRow, currentColumn);
+        }
+
+        // Check if moving to the right exceeds the grid boundaries
+        while (currentColumn < gridManager.columns - 1)
+        {
+            currentColumn++;
+            PlayAudioAndWait(StepSourceLeftRight);
+
+            // Check if the next grid cell has a different text
+            if (gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != currentString)
             {
-                subIndexMode = false;
-                mapItemIndex = 0;
-                uap.Saysomething("Back to main indexes");
-            }
-
-  
-            // Move up through the list
-            if (UnityEngine.Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                if (cvsRF.mapItems[mapItemIndex] == "Sales")
-                {
-                    if (salesItemIndex > 0)
-                    {
-                        salesItemIndex--;
-                        uap.Saysomething(cvsRF.salesItems[salesItemIndex]);
-                    }
-
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Entrances")
-                {
-                    if (entrancesItemIndex > 0)
-                    {
-                        entrancesItemIndex--;
-                        uap.Saysomething(cvsRF.entrancesItems[entrancesItemIndex]);
-                    }
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Movement")
-                {
-
-                    if (movementItemIndex > 0)
-                    {
-                        movementItemIndex--;
-                        uap.Saysomething(cvsRF.movementItems[movementItemIndex]);
-                    }
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Information")
-                {
-                    if (informationItemIndex > 0)
-                    {
-                        informationItemIndex--;
-                        uap.Saysomething(cvsRF.informationItems[informationItemIndex]);
-                    }
-                }
-
-            }
-            // Move down through the list
-            if (UnityEngine.Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                if (cvsRF.mapItems[mapItemIndex] == "Sales")
-                {
-                    if (salesItemIndex < cvsRF.salesItems.Count - 1)
-                    {
-                        salesItemIndex++;
-                        uap.Saysomething(cvsRF.salesItems[salesItemIndex]);
-                    }
-
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Entrances")
-                {
-                    if (entrancesItemIndex < cvsRF.entrancesItems.Count - 1)
-                    {
-                        entrancesItemIndex++;
-                        uap.Saysomething(cvsRF.entrancesItems[entrancesItemIndex]);
-                    }
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Movement")
-                {
-
-                    if (movementItemIndex < cvsRF.movementItems.Count - 1)
-                    {
-                        movementItemIndex++;
-                        uap.Saysomething(cvsRF.movementItems[movementItemIndex]);
-                    }
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Information")
-                {
-                    if (informationItemIndex < cvsRF.informationItems.Count - 1)
-                    {
-                        informationItemIndex++;
-                        uap.Saysomething(cvsRF.informationItems[informationItemIndex]);
-                    }
-                }
-
-            }
-
-
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Return))
-            {
-                if (cvsRF.mapItems[mapItemIndex] == "Sales")
-                {
-                     itemRow = cvsRF.salesItemRow[salesItemIndex];
-                     itemCol = cvsRF.salesItemCol[salesItemIndex];
-
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Entrances")
-                {
-                     itemRow = cvsRF.entrancessItemRow[entrancesItemIndex];
-                     itemCol = cvsRF.entrancesItemCol[entrancesItemIndex];
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Movement")
-                {
-
-                     itemRow = cvsRF.movementItemRow[movementItemIndex];
-                     itemCol = cvsRF.movementItemCol[movementItemIndex];
-                }
-                else if (cvsRF.mapItems[mapItemIndex] == "Information")
-                {
-                     itemRow = cvsRF.informationsItemRow[informationItemIndex];
-                     itemCol = cvsRF.informationItemCol[informationItemIndex];
-                }
-
-
-                Vector2Int differece = ComputeDifference(new Vector2Int(currentRow, currentColumn), new Vector2Int(itemRow, itemCol));
-                Debug.Log(differece.ToString());
-                string vertical;
-                string horizontal;
-                if (differece[0] <= 0)
-                {
-                    vertical = "down";
-
-                }
-                else
-                {
-                    vertical = "up";
-                }
-
-                if (differece[1] <= 0)
-                {
-                    horizontal = "right";
-                }
-                else
-                {
-                    horizontal = "left";
-                }
-                uap.Saysomething("The landmark is " + System.Math.Abs(differece[0]) + "units " + vertical + " and " + System.Math.Abs(differece[1]) + "units" + horizontal);
-                mapItemAudioSource.transform.localPosition = new Vector3(differece[0], 0, differece[1]);
-
-
+                break;
             }
         }
 
+        UpdateGridPosition(currentRow, currentColumn);
+        gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+    }
+    */
+    void JumpRight()
+    {
+        string currentString = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text; // Store current item
+        Debug.Log(currentString);
+        StepSourceLeftRight.transform.localPosition = RightSide;  // Change step sound position
 
+        if (numberOfSteps != 1)
+        {
+            gridManager.defocusOnPreviousGrid(currentRow, currentColumn);
+        }
+
+        // Check if moving to the right exceeds the grid boundaries
+        while (currentColumn < gridManager.columns - 1)
+        {
+            currentColumn++;
+
+            float delay = 0.1f * currentColumn; // Adjust the delay as needed
+            Invoke("PlayAudioLR", delay);
+
+            // Check if the next grid cell has a different text
+            if (gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != currentString)
+            {
+                break;
+            }
+        }
+
+        UpdateGridPosition(currentRow, currentColumn);
+        gridManager.focusOnCurrentGrid(currentRow, currentColumn);
     }
 
+    void JumpLeft()
+    {
+        string currentString = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
+        Debug.Log(currentString);
+        StepSourceLeftRight.transform.localPosition = LeftSide;
+
+        if (numberOfSteps != 1)
+        {
+            gridManager.defocusOnPreviousGrid(currentRow, currentColumn);
+        }
+
+        // Check if moving to the left exceeds the grid boundaries
+        while (currentColumn > 0)
+        {
+            currentColumn--;
+            float delay = 0.1f * Math.Abs(currentColumn); // Adjust the delay as needed
+            Invoke("PlayAudioLR", delay);
+            // Check if the next grid cell has a different text
+            if (gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != currentString)
+            {
+                break;
+            }
+        }
+
+        UpdateGridPosition(currentRow, currentColumn);
+        gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+
+        // Change step sound position
+        //StepSourceLeftRight.Play();
+    }
+
+    void JumpDown()
+    {
+        string currentString = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
+        Debug.Log(currentString);
+        StepSourceUpDown.transform.localPosition = ForwardSide;
+
+        if (numberOfSteps != 1)
+        {
+            gridManager.defocusOnPreviousGrid(currentRow, currentColumn);
+        }
+
+        // Check if moving up exceeds the grid boundaries
+        while (currentRow < gridManager.rows - 1)
+        {
+            currentRow++;
+            float delay = 0.2f * Math.Abs(currentRow); // Adjust the delay as needed
+            Invoke("PlayAudioUD", delay);
+            // Check if the next grid cell has a different text
+            if (gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != currentString)
+            {
+                break;
+            }
+        }
+
+        UpdateGridPosition(currentRow, currentColumn);
+        gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+
+        // Change step sound position
+        //StepSourceUpDown.Play();
+    }
+
+    void JumpUp()
+    {
+        string currentString = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
+        Debug.Log(currentString);
+        StepSourceUpDown.transform.localPosition = BackSide;
+
+        if (numberOfSteps != 1)
+        {
+            gridManager.defocusOnPreviousGrid(currentRow, currentColumn);
+        }
+
+        // Check if moving down exceeds the grid boundaries
+        while (currentRow > 0)
+        {
+            currentRow--;
+            float delay = 0.2f * Math.Abs(currentRow); // Adjust the delay as needed
+            Invoke("PlayAudioUD", delay);
+            // Check if the next grid cell has a different text
+            if (gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != currentString)
+            {
+                break;
+            }
+        }
+
+        UpdateGridPosition(currentRow, currentColumn);
+        gridManager.focusOnCurrentGrid(currentRow, currentColumn);
+
+        // Change step sound position
+        //StepSourceUpDown.Play();
+    }
     // Move selection to the right.
     void MoveRight()
     {
@@ -354,15 +336,15 @@ public class GridNavigator : MonoBehaviour
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
             //change step sound position
-            StepSource.transform.localPosition=RightSide;
-            StepSource.Play();
+            StepSourceLeftRight.transform.localPosition = RightSide;
+            StepSourceLeftRight.Play();
 
         }
-        else{
+        else
+        {
             BoundarySource.Play();
         }
     }
-
     // Move selection to the left.
     void MoveLeft()
     {
@@ -377,8 +359,8 @@ public class GridNavigator : MonoBehaviour
 
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
-            StepSource.transform.localPosition=LeftSide;
-            StepSource.Play();
+            StepSourceLeftRight.transform.localPosition=LeftSide;
+            StepSourceLeftRight.Play();
         }
         else{
             BoundarySource.Play();
@@ -399,7 +381,7 @@ public class GridNavigator : MonoBehaviour
 
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
-            StepSource.Play();
+            StepSourceUpDown.Play();
         }
         else{
             BoundarySource.Play();
@@ -420,7 +402,7 @@ public class GridNavigator : MonoBehaviour
             currentRow++;
             UpdateGridPosition(currentRow, currentColumn);
             gridManager.focusOnCurrentGrid(currentRow, currentColumn);
-            StepSource.Play();
+            StepSourceUpDown.Play();
         }
         else{
             BoundarySource.Play();
@@ -543,12 +525,172 @@ public class GridNavigator : MonoBehaviour
     private System.Collections.IEnumerator ExecuteEndOfFrame()
     {
         yield return new WaitForEndOfFrame(); // Waits until the end of the current frame
-        currentMapItem = cvsRF.mapItems[mapItemIndex];
+        //currentMapItem = cvsRF.mapItems[mapItemIndex];
 
     }
     // Function to compute the difference between two Vector2Int vectors
     private Vector2Int ComputeDifference(Vector2Int vectorA, Vector2Int vectorB)
     {
         return vectorA - vectorB;
+    }
+   
+    void HandleInput()
+    {
+        if (UnityEngine.Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            if (inSublist)
+            {
+                // Navigate within the sublist
+                sublistIndex = Mathf.Max(0, sublistIndex - 1);
+                uap.Saysomething(cvsRF.subLists[selectedMainItem][sublistIndex]);
+                if(sublistIndex == 0)
+                {
+                    BoundarySource.Play();
+                }
+
+            }
+            else
+            {
+                // Navigate within the main list
+                mainListIndex = Mathf.Max(0, mainListIndex - 1);
+                selectedMainItem = cvsRF.mainList[mainListIndex];
+                uap.Saysomething(selectedMainItem);
+                if (mainListIndex == 0)
+                {
+                    BoundarySource.Play();
+                }
+            }
+            
+
+        }
+        else if (UnityEngine.Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            if (inSublist)
+            {
+                // Navigate within the sublist
+                if (cvsRF.subLists.ContainsKey(selectedMainItem) && sublistIndex < cvsRF.subLists[selectedMainItem].Count - 1)
+                {
+                    sublistIndex++;
+                    uap.Saysomething(cvsRF.subLists[selectedMainItem][sublistIndex]);
+                }
+                else
+                {
+                    BoundarySource.Play();
+                }
+            }
+            else
+            {
+                // Navigate within the main list
+                if (mainListIndex < cvsRF.mainList.Count - 1)
+                {
+                    mainListIndex++;
+                    selectedMainItem = cvsRF.mainList[mainListIndex];
+                    uap.Saysomething(selectedMainItem);
+                }
+                else
+                {
+                    BoundarySource.Play();
+                }
+            }
+        }
+        else if (UnityEngine.Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            // Enter the sublist
+            if (cvsRF.subLists.ContainsKey(selectedMainItem) && cvsRF.subLists[selectedMainItem].Count > 0)
+            {
+                inSublist = true;
+                uap.Saysomething(cvsRF.mainList[mainListIndex] + " selected. First sub index: " + (cvsRF.subLists[selectedMainItem][sublistIndex]));
+            }
+        }
+        else if (UnityEngine.Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            // Go back to the main list
+            inSublist = false;
+            sublistIndex = 0;
+            uap.Saysomething(selectedMainItem); // Optional: Say something when going back to the main list
+        }
+        if (UnityEngine.Input.GetKeyDown(KeyCode.Return) && inSublist && !returnKeyPressed)
+        {
+            Tuple<int, int> tuple = cvsRF.subListPositions[cvsRF.subLists[selectedMainItem][sublistIndex]];
+
+            // Access individual elements of the tuple
+            row = tuple.Item1;
+            column = tuple.Item2;
+
+            // Now you can use 'row' and 'column' as needed
+;
+            Vector2Int differece = ComputeDifference(new Vector2Int(currentRow, currentColumn), new Vector2Int(row, column));
+            Debug.Log(differece.ToString());
+            string vertical;
+            string horizontal;
+            if (differece[0] <= 0)
+            {
+                vertical = "down";
+
+            }
+            else
+            {
+                vertical = "up";
+            }
+
+            if (differece[1] <= 0)
+            {
+                horizontal = "right";
+            }
+            else
+            {
+                horizontal = "left";
+            }
+            uap.Saysomething("The landmark " + cvsRF.subLists[selectedMainItem][sublistIndex] + " is " + System.Math.Abs(differece[0]) + " units " + vertical + " and " + System.Math.Abs(differece[1]) + " units" + horizontal +". Press enter again to teleport to this position.");
+            returnKeyPressed = true;
+            mapItemAudioSource.transform.localPosition = new Vector3(differece[0], 0, differece[1]);
+        }
+        else if(UnityEngine.Input.GetKeyDown(KeyCode.Return) && inSublist && returnKeyPressed)
+        {
+            gridManager.defocusOnPreviousGrid(currentRow, currentColumn);
+            gridManager.focusOnCurrentGrid(row, column);
+            currentColumn = column;
+            currentRow = row;
+            returnKeyPressed=false;
+            indexMode = false;
+            uap.Saysomething("Teleporting to : " + cvsRF.subLists[selectedMainItem][sublistIndex]);
+
+        }
+
+
+    }
+    void DisplayCurrentSelection()
+    {
+        if (inSublist)
+        {
+            Debug.Log($"Selected Sublist Item: {cvsRF.subLists[selectedMainItem][sublistIndex]}");
+        }
+        else
+        {
+            Debug.Log($"Selected Main Item: {selectedMainItem}");
+        }
+    }
+    private void PlayAudioAndWait(AudioSource audioSource)
+    {
+        // Play the audio clip
+        audioSource.Play();
+
+        // Use Invoke to schedule stopping the audio after the clip length
+        Invoke("StopAudio", audioSource.clip.length);
+    }
+
+    private void StopAudio()
+    {
+        // Stop the audio after the clip length
+        StepSourceLeftRight.Stop();
+    }
+    // Function to play audio
+    void PlayAudioLR()
+    {
+        PlayAudioAndWait(StepSourceLeftRight);
+    }
+    void PlayAudioUD()
+    {
+        PlayAudioAndWait(StepSourceUpDown);
     }
 }

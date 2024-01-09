@@ -11,7 +11,6 @@ public class GridManager : MonoBehaviour
     public int columns = 5;        // Number of columns in the grid.
     public string coord;        // Number of columns in the grid.
     public UAP_AccessibilityManager uap;
-
     public GameObject cTTS;
 
 
