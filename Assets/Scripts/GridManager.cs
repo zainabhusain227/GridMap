@@ -1,5 +1,4 @@
 using System.Collections;
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +7,7 @@ public class GridManager : MonoBehaviour
 {
     public GameObject[,] grid;    // 2D array to store cube game objects.
     public GameObject cubePrefab;  // The cube prefab you want to use.
+    public GridNavigator gridNavigator;
     public int rows = 5;           // Number of rows in the grid.
     public int columns = 5;        // Number of columns in the grid.
     public string coord;        // Number of columns in the grid.
@@ -20,12 +20,14 @@ public class GridManager : MonoBehaviour
     public void Start()
     {
         CreateGrid();
-        this.gameObject.transform.localPosition = new Vector3(-857f, 894f,0f);
+        this.gameObject.transform.localPosition = new Vector3(-857f, 694f,0f);
+        //this.gameObject.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
         //StartCoroutine(resetGridPosition());
     }
 
     public void CreateGrid()
     {
+        
         grid = new GameObject[rows, columns];
 
         // Calculate the size of each cube based on the canvas size and grid dimensions.
@@ -74,14 +76,7 @@ public class GridManager : MonoBehaviour
     public void CurrentGridCoord(int row, int column)
     {
         grid[row, column].gameObject.GetComponent<Image>().color = Color.red;
-        //ascii number to letter
-        if (column< 0 || column > 25)
-        {
-            throw new ArgumentOutOfRangeException("Number must be between 0 and 25 inclusive.");
-        }
-
-        char col_char = (char)('A' + column);
-        coord = col_char.ToString() + " " + row.ToString();
+        coord= column.ToString() + " " + row.ToString();
         uap.Saysomething(coord);
     }
     public void focusOnCurrentGrid(int row, int column)
@@ -103,9 +98,15 @@ public class GridManager : MonoBehaviour
             // If you want to know which delimiter was found, use foundDelimiter
             // For example:
             // Console.WriteLine("Delimiter found: " + foundDelimiter);
+            gridNavigator.UpdateAllSoundManagers(row, column);
         }
         else
         {
+            /*if (grid[row, column].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != originalText)
+            {
+                break;
+            }*/
+
             uap.Saysomething(grid[row, column].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
 
         }
@@ -217,10 +218,4 @@ public class GridManager : MonoBehaviour
         //yield on a new YieldInstruction that waits for 2 seconds.
     }
 
-    public void UpdateAllAmbientSounds(){
-        //for each element in the list:
-            //list[i].UpdateSoundPosition();
-    }
-
 }
-
