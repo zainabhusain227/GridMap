@@ -12,25 +12,25 @@ public class SublistData
     public int Column { get; set; }
 }
 
-public class CSVReaderFinal : MonoBehaviour
+public class CSVReader : MonoBehaviour
 {
     public TextAsset csvFile; // Reference to your .csv file (drag and drop it in the Unity inspector)
     public string[,] dataArray;
     public GridManager gridManager;
 
+    public CSVLoader csvLoader;
     //public List<string> mapItems = new List<string>();
-    
+
     public List<string> mainList = new List<string>();
     public Dictionary<string, List<string>> subLists = new Dictionary<string, List<string>>();
     public Dictionary<string, Tuple<int, int>> subListPositions = new Dictionary<string, Tuple<int, int>>();
 
     void Start()
     {
-        LoadCSV();
-        //PrintMain_SubList();
-        //PrintSubListPositions();
-    }
+        csvLoader.LoadCSVFilePaths();
 
+        LoadCSV();
+    }
     void LoadCSV()
     {
         if (csvFile != null)

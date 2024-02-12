@@ -1,0 +1,11 @@
+,,textAppears=Wall/zoom_out_csv=4-1,,
+,,Movement;Elevator Gate 8 and 9 up to GO trains*elevator@5/warpfile=york_washrooms.csv/zoom_out_csv=4-1,,textAppears=Pillar/zoom_out_csv=4-1
+,,textAppears=Wall/zoom_out_csv=4-1,,
+,,textAppears=Wall/zoom_out_csv=4-1,textAppears=Benches/zoom_out_csv=4-1,
+,,textAppears=Wall/zoom_out_csv=5-1,textAppears=Benches/zoom_out_csv=5-1,
+textAppears=Wall/zoom_out_csv=5-1,textAppears=Women's washroom/level1h=York concourse/level2h=Facilities/level3h=Washrooms/beacon=washroom_ambient/srange=4/warpfile=york_washrooms.csv/zoom_out_csv=5-1,textAppears=Wall/zoom_out_csv=5-1,textAppears=Drinking fountain/level1h=York concourse/level2h=Facilities/zoom_out_csv=5-1,textAppears=Pillar/zoom_out_csv=5-1
+textAppears=Wall/zoom_out_csv=6-1,textAppears=Washroom entrance/zoom_out_csv=5-1,textAppears=Washroom entrance/zoom_out_csv=5-1,,
+textAppears=Accessible washroom/level1h=York concourse/level2h=Facilities/level3h=Washrooms/beacon=washroom_ambient/srange=4/warpfile=york_washrooms.csv/zoom_out_csv=6-1,textAppears=Washroom entrance/zoom_out_csv=6-1,textAppears=Washroom entrance/zoom_out_csv=7-1,,
+textAppears=Wall/zoom_out_csv=6-1,textAppears=Men's washroom/level1h=York concourse/level2h=Facilities/level3h=Washrooms/beacon=washroom_ambient/srange=4/warpfile=york_washrooms.csv/zoom_out_csv=7-1,textAppears=Wall/zoom_out_csv=7-1,,textAppears=Garbage can/zoom_out_csv=8-2
+,,textAppears=Wall/zoom_out_csv=7-1,,textAppears=Pillar/zoom_out_csv=8-2
+,,textAppears=Wall/zoom_out_csv=8-2,,textAppears=Fare machine/level1h=York concourse/level2h=Facilities/beacon=ticket_scan_main/srange=3/warpfile=york_washrooms.csv/zoom_out_csv=8-2

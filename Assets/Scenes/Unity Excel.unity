@@ -1118,6 +1118,7 @@ GameObject:
   - component: {fileID: 2045457160}
   - component: {fileID: 2045457162}
   - component: {fileID: 2045457163}
+  - component: {fileID: 2045457164}
   m_Layer: 0
   m_Name: MainFrame and Controller
   m_TagString: Untagged
@@ -1209,9 +1210,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 2045457156}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06874e82519f7b44aaa56247bab34b57, type: 3}
+  m_Script: {fileID: 11500000, guid: 92772c415151e694e89b6d81f7aa384d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   csvFile: {fileID: 4900000, guid: 0fd885c5adbb4458c8e10259b2ae9ab4, type: 3}
   gridManager: {fileID: 1058019958}
+  csvLoader: {fileID: 2045457164}
   mainList: []
+--- !u!114 &2045457164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045457156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d17389d29875b2748848b9edd933bc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  csvFilePaths: []
