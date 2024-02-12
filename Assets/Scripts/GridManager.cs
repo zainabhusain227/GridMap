@@ -18,9 +18,15 @@ public class GridManager : MonoBehaviour
     // assign the coordinates and scale values 
     public void Start()
     {
-        CreateGrid();
+        //CreateGrid();
+        uap = GameObject.Find("Accessibility Manager").GetComponent<UAP_AccessibilityManager>();
         this.gameObject.transform.localPosition = new Vector3(-857f, 894f,0f);
         //StartCoroutine(resetGridPosition());
+    }
+    public void setGridSize(int i, int j)
+    {
+        rows = i; columns = j;
+        CreateGrid();   
     }
 
     public void CreateGrid()

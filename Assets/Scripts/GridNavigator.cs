@@ -48,8 +48,8 @@ public class GridNavigator : MonoBehaviour
     public string currentMapItem;
     public GameObject mapItemAudioSource;
 
-    public AudioClip escalators;
-    public AudioClip trainStation;
+    //public AudioClip escalators;
+   // public AudioClip trainStation;
 
     int itemRow;
     int itemCol;
@@ -68,6 +68,7 @@ public class GridNavigator : MonoBehaviour
 
     void Start()
     {
+        uap = GameObject.Find("Accessibility Manager").GetComponent<UAP_AccessibilityManager>();
         // Initialize the starting position.
         UpdateGridPosition(currentRow, currentColumn);
         CalculatePositions();

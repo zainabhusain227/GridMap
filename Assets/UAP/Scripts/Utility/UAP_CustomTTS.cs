@@ -92,7 +92,7 @@ public class UAP_CustomTTS : MonoBehaviour
 		Debug.Log("[TTS] Initializing Custom TTS");
 
 		Instance.Initialize();
-		//DontDestroyOnLoad(newTTSGO);
+		DontDestroyOnLoad(newTTSGO); // fixed the bug where the saySomething wouldnt soeak when loading a new scene (related to the missing customTTS gameobject that appears)
 	}
 
 	//////////////////////////////////////////////////////////////////////////

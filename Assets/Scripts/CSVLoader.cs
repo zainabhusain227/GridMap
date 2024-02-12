@@ -1,38 +1,61 @@
 using UnityEngine;
-using System.IO;
-using UnityEditor; // This is crucial for accessing Unity's AssetDatabase and other editor functionalities
+using System.IO; // Note: This may not be necessary unless you're using it elsewhere in your script.
+using UnityEditor; // Be cautious about using UnityEditor in a runtime script, it's generally for editor scripts.
+using UnityEngine.SceneManagement;
 
 public class CSVLoader : MonoBehaviour
 {
-    // Store the loaded file paths here
-    public string[] csvFilePaths;
+    public TextAsset[] csvTextAssets; // Array to store additional CSV TextAssets if needed
 
-    // Assuming this method is called to load the CSV files' paths
-    public void LoadCSVFilePaths()
+    // Singleton instance
+    public static CSVLoader Instance;
+    public TextAsset loadedCSV;
+    void Awake()
     {
-        string folderPath = "Assets/Maps/"; // Change this to your specific folder path
-        LoadCSVFilesFromFolder(folderPath);
+        // Check if an instance already exists
+        if (Instance == null)
+        {
+            // If no instance exists, this becomes the singleton instance
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (Instance != this)
+        {
+            // If an instance already exists that is not this, destroy this object
+            Destroy(gameObject);
+        }
     }
 
-    private void LoadCSVFilesFromFolder(string folderPath)
+    public void Start()
     {
-        // Get all file paths from the folder
-        string[] filePaths = Directory.GetFiles(folderPath, "*.csv");
+        LoadCSVTextAssets();
+    }
 
-        // Initialize the csvFilePaths array with the number of found csv files
-        csvFilePaths = new string[filePaths.Length];
+    public void LoadCSVTextAssets()
+    {
+        string resourcesPath = "Maps"; // The name of your subfolder within the Resources folder
 
-        for (int i = 0; i < filePaths.Length; i++)
+        // Load all TextAssets from the specified path within the Resources folder
+        csvTextAssets = Resources.LoadAll<TextAsset>(resourcesPath);
+
+        // Optionally, print the names of the loaded TextAssets to verify
+        foreach (TextAsset textAsset in csvTextAssets)
         {
-            // Convert the full path to a relative path that Unity uses
-            string relativePath = filePaths[i].Replace("\\", "/").Replace(Application.dataPath, "Assets");
-            csvFilePaths[i] = relativePath;
+            Debug.Log(textAsset.name);
         }
-
-        // Optionally, print the paths to the console to verify
-        foreach (string path in csvFilePaths)
+    }
+    public void changeCSVFile(string name)
+    {
+        loadedCSV = FindCSVByName(name);
+    }
+    TextAsset FindCSVByName(string name)
+    {
+        foreach (TextAsset csv in csvTextAssets)
         {
-            Debug.Log(path);
+            if (csv.name == name)
+                return csv;
         }
+        Debug.LogWarning("CSV with name " + name + " not found.");
+        return null;
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using System;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class SublistData
 {
@@ -14,11 +15,12 @@ public class SublistData
 
 public class CSVReader : MonoBehaviour
 {
-    public TextAsset csvFile; // Reference to your .csv file (drag and drop it in the Unity inspector)
+    private TextAsset csvFile; // Reference to your .csv file (drag and drop it in the Unity inspector)
     public string[,] dataArray;
     public GridManager gridManager;
 
     public CSVLoader csvLoader;
+    public UAP_AccessibilityManager uap; 
     //public List<string> mapItems = new List<string>();
 
     public List<string> mainList = new List<string>();
@@ -27,7 +29,11 @@ public class CSVReader : MonoBehaviour
 
     void Start()
     {
-        csvLoader.LoadCSVFilePaths();
+        uap = GameObject.Find("Accessibility Manager").GetComponent<UAP_AccessibilityManager>();
+
+        csvLoader = GameObject.FindWithTag("CSVLoader").GetComponent<CSVLoader>();
+     
+        csvFile = csvLoader.loadedCSV;
 
         LoadCSV();
     }
@@ -40,7 +46,7 @@ public class CSVReader : MonoBehaviour
             int numCols = lines[0].Split(',').Length;
             Debug.Log("Total number of Rows: " + numRows);
             Debug.Log("Total number of Columns: " + numCols);
-
+            gridManager.setGridSize(numRows, numCols); 
             dataArray = new string[numRows, numCols];
 
             for (int i = 0; i < numRows; i++)
@@ -141,5 +147,10 @@ public class CSVReader : MonoBehaviour
 
            Debug.Log($"Key: {key}, Value: ({firstValue}, {secondValue})");
         }
+    }
+    public void resetScene()
+    {
+        uap.stopTalking();
+        SceneManager.LoadScene(1); // loads the reset scene 
     }
 }
