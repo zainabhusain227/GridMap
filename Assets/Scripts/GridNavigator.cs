@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.Windows;
 using System.Collections;
 using System;
+using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class GridNavigator : MonoBehaviour
 {
@@ -50,7 +52,7 @@ public class GridNavigator : MonoBehaviour
 
     //public AudioClip escalators;
    // public AudioClip trainStation;
-
+    public CSVLoader csvLoader;
     int itemRow;
     int itemCol;
 
@@ -69,6 +71,7 @@ public class GridNavigator : MonoBehaviour
     void Start()
     {
         uap = GameObject.Find("Accessibility Manager").GetComponent<UAP_AccessibilityManager>();
+        csvLoader = GameObject.FindWithTag("CSVLoader").GetComponent<CSVLoader>();
         // Initialize the starting position.
         UpdateGridPosition(currentRow, currentColumn);
         CalculatePositions();
@@ -165,7 +168,19 @@ public class GridNavigator : MonoBehaviour
             }
             else if(UnityEngine.Input.GetKeyDown(KeyCode.Return)) 
             {
-                
+                string originalText = gridManager.grid[currentRow, currentColumn].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
+                StringParser parser = new StringParser();
+                Dictionary<string, string> parsedData = parser.ParseString(originalText);
+
+                if (parsedData.TryGetValue("warpfile", out string warpFile))
+                {
+                    loadMap(parsedData["warpfile"]);
+                }
+                else
+                {
+                    Debug.Log("Warp file not found");
+                }
+
             }
         }
         else if(indexMode == true)
@@ -412,6 +427,14 @@ public class GridNavigator : MonoBehaviour
         else{
             BoundarySource.Play();
         }
+    }
+    private void loadMap(string mapID)
+    {
+        Debug.Log("bruhhhhhhh@e24" + mapID);
+        csvLoader.changeCSVFile(mapID);
+        uap.stopTalking();
+        SceneManager.LoadScene(1); // loads the reset scene 
+       
     }
 
     // Update the grid selection based on the current row and column.

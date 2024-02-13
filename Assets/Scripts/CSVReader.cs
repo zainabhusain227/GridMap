@@ -148,9 +148,4 @@ public class CSVReader : MonoBehaviour
            Debug.Log($"Key: {key}, Value: ({firstValue}, {secondValue})");
         }
     }
-    public void resetScene()
-    {
-        uap.stopTalking();
-        SceneManager.LoadScene(1); // loads the reset scene 
-    }
 }

@@ -2,6 +2,8 @@ using UnityEngine;
 using System.IO; // Note: This may not be necessary unless you're using it elsewhere in your script.
 using UnityEditor; // Be cautious about using UnityEditor in a runtime script, it's generally for editor scripts.
 using UnityEngine.SceneManagement;
+using UnityEngine.Windows;
+using System.Text.RegularExpressions; 
 
 public class CSVLoader : MonoBehaviour
 {
@@ -46,16 +48,26 @@ public class CSVLoader : MonoBehaviour
     }
     public void changeCSVFile(string name)
     {
-        loadedCSV = FindCSVByName(name);
+        Debug.Log("!!!!!!!!!!!!!!" + name);
+        loadedCSV = FindCSVByName(name.Replace(" ", ""));
     }
-    TextAsset FindCSVByName(string name)
+    TextAsset FindCSVByName(string name) //string name
     {
+        name = RemoveAllWhitespace(name);
+        Debug.Log("name == " + name);
         foreach (TextAsset csv in csvTextAssets)
         {
+            Debug.Log(csv.name);
             if (csv.name == name)
                 return csv;
         }
         Debug.LogWarning("CSV with name " + name + " not found.");
         return null;
+    }
+    public static string RemoveAllWhitespace(string input)
+    {
+        // This regex pattern matches any whitespace character.
+        // \s matches spaces, tabs, new lines, carriage returns, etc.
+        return Regex.Replace(input, @"\s+", "");
     }
 }

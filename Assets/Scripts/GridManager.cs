@@ -94,7 +94,14 @@ public class GridManager : MonoBehaviour
         StringParser parser = new StringParser();
         Dictionary<string, string> parsedData = parser.ParseString(originalText);
 
-        if (parsedData.TryGetValue("textAppears", out string nameValue))
+        if ((parsedData.TryGetValue("textAppears", out string textAppears)) && (parsedData.TryGetValue("warpfile", out string warpfile)))
+        {
+            int dotIndex = parsedData["warpfile"].IndexOf('.');
+            string substringWarpFile = parsedData["warpfile"].Substring(0, dotIndex);
+
+            uap.Saysomething(parsedData["textAppears"] + ". Press enter to move to " + substringWarpFile);
+        }
+        else if (parsedData.TryGetValue("textAppears", out string nameValue))
         {
             uap.Saysomething(parsedData["textAppears"]);
         }
