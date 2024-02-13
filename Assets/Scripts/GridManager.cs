@@ -1,7 +1,11 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 
 public class GridManager : MonoBehaviour
 {
@@ -86,27 +90,19 @@ public class GridManager : MonoBehaviour
     {
         grid[row, column].gameObject.GetComponent<Image>().color = Color.red;
         string originalText = grid[row, column].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
-        int delimiterIndex = originalText.IndexOfAny(new char[] { ';', '#' });
 
-        if (delimiterIndex != -1)
+        StringParser parser = new StringParser();
+        Dictionary<string, string> parsedData = parser.ParseString(originalText);
+
+        if (parsedData.TryGetValue("textAppears", out string nameValue))
         {
-            char foundDelimiter = originalText[delimiterIndex];
-
-            // Extract the text after the delimiter
-            string textAfterDelimiter = originalText.Substring(delimiterIndex + 1).Trim();
-
-            // Use the extracted text or perform operations as needed
-            uap.Saysomething(textAfterDelimiter);
-
-            // If you want to know which delimiter was found, use foundDelimiter
-            // For example:
-            // Console.WriteLine("Delimiter found: " + foundDelimiter);
+            uap.Saysomething(parsedData["textAppears"]);
         }
         else
         {
-            uap.Saysomething(grid[row, column].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
-
+            Debug.Log("Nothing to speak out");
         }
+
     }
     public void defocusOnPreviousGrid(int row, int column)
     {
@@ -161,34 +157,18 @@ public class GridManager : MonoBehaviour
         {
             // following is the new code
             string originalText = grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
-            int delimiterIndex = originalText.IndexOfAny(new char[] { ';', '#' });
 
-            if (delimiterIndex != -1)
+            StringParser parser = new StringParser();
+            Dictionary<string, string> parsedData = parser.ParseString(originalText);
+
+            if (parsedData.TryGetValue("textAppears", out string nameValue))
             {
-                char foundDelimiter = originalText[delimiterIndex];
-
-                // Extract the text after the delimiter
-                string textAfterDelimiter = originalText.Substring(delimiterIndex + 1).Trim();
-
-                // Use the extracted text or perform operations as needed
-                uap.Saysomething(textAfterDelimiter);
-
-                // If you want to know which delimiter was found, use foundDelimiter
-                // For example:
-                // Console.WriteLine("Delimiter found: " + foundDelimiter);
+                uap.Saysomething(parsedData["textAppears"]);
             }
             else
             {
-                uap.Saysomething(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
-
+                Debug.Log("Nothing to speak out [SpeakAroundMe]");
             }
-
-
-            /* original code
-            //uap.Saysomething(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
-            uap.Saysomething3D(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text, position);
-            Debug.Log(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
-            */
         }
 
     }

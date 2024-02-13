@@ -1264,7 +1264,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   csvTextAssets: []
-  loadedCSV: {fileID: 4900000, guid: a22a7ea20e8ed3244bda4a5354ee8b4c, type: 3}
+  loadedCSV: {fileID: 4900000, guid: 0ff458d8365e35941bb3e98fb5f08d67, type: 3}
 --- !u!4 &1388721748
 Transform:
   m_ObjectHideFlags: 0
@@ -1648,6 +1648,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridManager: {fileID: 1058019958}
   csvLoader: {fileID: 1388721747}
+  uap: {fileID: 0}
   mainList: []
 --- !u!1 &2050139564
 GameObject:

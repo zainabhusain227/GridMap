@@ -163,6 +163,10 @@ public class GridNavigator : MonoBehaviour
             {
                 speakLandmarks();
             }
+            else if(UnityEngine.Input.GetKeyDown(KeyCode.Return)) 
+            {
+                
+            }
         }
         else if(indexMode == true)
         {
@@ -493,7 +497,7 @@ public class GridNavigator : MonoBehaviour
             Debug.Log("i = " + i);
             //cTTS.transform.position = positions[i];
             gridManager.speakAroundMe(neighboringRows[i], neighboringColumns[i], cTTS.transform);
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(2);
 
         }
         //yield on a new YieldInstruction that waits for 2 seconds.
