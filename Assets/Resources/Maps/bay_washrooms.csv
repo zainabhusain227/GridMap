@@ -1,0 +1,10 @@
+textAppears=Men's Washroom/level1h=Bay Concourse/level2h=Facilities/level3h=Washrooms/beacon=washroom_ambient/srange=4/warpfile=bay_washrooms.csv/zoom_out_csv=3-3,,,
+textAppears=Wall/zoom_out_csv=3-3,,,
+textAppears=Wall/zoom_out_csv=3-3,,,
+textAppears=Drinking fountain/level1h=Bay concourse/level2h=Facilities/zoom_out_csv=3-3,,,
+textAppears=Wall/zoom_out_csv=4-3,textAppears=Wall/zoom_out_csv=4-3,,
+textAppears=Pillar/zoom_out_csv=4-3,textAppears=Women's Washroom/level1h=Bay Concourse/level2h=Facilities/level3h=Washrooms/beacon=washroom_ambient/srange=4/warpfile=bay_washrooms.csv/zoom_out_csv=4-3,,
+,textAppears=Wall/zoom_out_csv=4-3,textAppears=Wall/zoom_out_csv=4-3,textAppears=Wall/zoom_out_csv=4-3
+,,,textAppears=Wall/zoom_out_csv=4-3
+textAppears=Pillar/zoom_out_csv=4-3,,,textAppears=Wall/zoom_out_csv=4-3
+,,textAppears=TD ATM machine/level1h=Bay concourse/level2h=Facilities/zoom_out_csv=4-3,textAppears=Wall/zoom_out_csv=4-3

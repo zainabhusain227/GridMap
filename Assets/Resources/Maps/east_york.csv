@@ -1,0 +1,8 @@
+textAppears=INS Market store/level1h=York concourse/level2h=Facilities/warpfile=york_food_corner.csv/zoom_out_csv=2-2/zoom_in_csv=1-1,
+textAppears=Gate 12 and 13 elevator up to GO trains/level1h=York concourse/level2h=Navigation/level3h=Elevators/beacon=elevator/srange=5/warpfile=york_food_corner.csv/zoom_out_csv=2-2/zoom_in_csv=2-1,
+textAppears=McCafe counter/level1h=York concourse/level2h=Facilities/warpfile=york_food_corner.csv/zoom_out_csv=2-2/zoom_in_csv=3-1,textAppears=Fare machine/level1h=York concourse/level2h=Facilities/beacon=ticket_scan_main/srange=3/warpfile=york_food_corner.csv/zoom_out_csv=2-2/zoom_in_csv=3-2
+textAppears=Gate 8 and 9 elevators up to GO trains /level1h=York concourse/level2h=Navigation/level3h=Elevators/beacon=elevator/srange=5/warpfile=york_washrooms.csv/zoom_out_csv=2-2/zoom_in_csv=4-1,
+textAppears=Women's washroom/level1h=York concourse/level2h=Facilities/level3h=Washrooms/beacon=washroom_ambient/srange=4/warpfile=york_washrooms.csv/zoom_out_csv=2-2/zoom_in_csv=5-1,
+textAppears=Accessible washroom/level1h=York concourse/level2h=Facilities/level3h=Washrooms/beacon=washroom_ambient/srange=4/warpfile=york_washrooms.csv/zoom_out_csv=2-2/zoom_in_csv=6-1,
+textAppears=Men's washroom/level1h=York concourse/level2h=Facilities/level3h=Washrooms/beacon=washroom_ambient/srange=4/warpfile=york_washrooms.csv/zoom_out_csv=2-2/zoom_in_csv=7-1,
+,textAppears=Fare machine/level1h=York concourse/level2h=Facilities/beacon=ticket_scan_main/srange=3/warpfile=york_washrooms.csv/zoom_out_csv=2-2/zoom_in_csv=8-2

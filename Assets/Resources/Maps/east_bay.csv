@@ -1,0 +1,9 @@
+textAppears=Gate 10 and 11 stairs up to GO trains/level1h=Bay Concourse/level2h=Navigation/level3h=Stairs/beacon=train-station-ambient/srange=8/warpfile=gate10-11_stairs.csv/zoom_out_csv=1-1/zoom_in_csv=1-1,
+textAppears=Fare machine/level1h=Bay Concourse/level2h=Facilities/beacon=ticket_scan_main/srange=3/warpfile=gate6-7_stairs.csv/zoom_out_csv=1-1/zoom_in_csv=2-1,textAppears=Escalators down to mall/level1h=Bay Concourse/level2h=Navigation/level3h=Escalators/beacon=escalator/srange=5/warpfile=mall_stairs.csv/zoom_out_csv=1-1/zoom_in_csv=2-2
+textAppears=Gate 6 and 7 stairs up to GO trains/level1h=Bay Concourse/level2h=Navigation/level3h=Stairs/beacon=train-station-ambient/srange=8/warpfile=gate6-7_stairs.csv/zoom_out_csv=1-1/zoom_in_csv=3-1,
+textAppears=Fare machine/level1h=Bay Concourse/level2h=Facilities/beacon=ticket_scan_main/srange=3/warpfile=gate6-7_stairs.csv/zoom_out_csv=1-1/zoom_in_csv=4-1,
+textAppears=East Gate 4 and 5 stairs up to GO trains/level1h=Bay Concourse/level2h=Navigation/level3h=Stairs/beacon=train-station-ambient/srange=8/warpfile=eastgate4-5_stairs.csv/zoom_out_csv=1-1/zoom_in_csv=5-1,
+textAppears=Fare machine/level1h=Bay Concourse/level2h=Facilities/beacon=ticket_scan_main/srange=3/warpfile=eastgate4-5_stairs.csv/zoom_out_csv=1-1/zoom_in_csv=6-1,textAppears=Catwalk over mall/level1h=Bay Concourse/level2h=Navigation/beacon=mall_sound/srange=12/warpfile=catwalk_over_mall.csv/zoom_out_csv=1-1/zoom_in_csv=6-2
+,
+,
+,
