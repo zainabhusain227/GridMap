@@ -147,8 +147,8 @@ GameObject:
   - component: {fileID: 2450654997207435749}
   - component: {fileID: 5567405014502364734}
   - component: {fileID: 5155577976019331354}
-  - component: {fileID: 1938826021103576910}
-  - component: {fileID: 7879107112485468573}
+  - component: {fileID: 4591994220126200880}
+  - component: {fileID: 941650240799973419}
   m_Layer: 0
   m_Name: gridImage
   m_TagString: Untagged
@@ -230,7 +230,26 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 3, y: 3}
   m_UseGraphicAlpha: 1
---- !u!82 &1938826021103576910
+--- !u!114 &4591994220126200880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168896013252453959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e72e24e5b1bc2ff4c94eb6b6923488bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cTTS: {fileID: 0}
+  AmbientVect: {x: 0, y: 0, z: 0}
+  CVSR: {fileID: 0}
+  gridNavigator: {fileID: 0}
+  gridManager: {fileID: 0}
+  myRow: 0
+  myCol: 0
+--- !u!82 &941650240799973419
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -326,22 +345,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &7879107112485468573
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5168896013252453959}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea665bcd03f74044484885fc70d7d441, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cTTS: {fileID: 0}
-  AmbientVect: {x: 0, y: 0, z: 0}
-  CVSR: {fileID: 0}
-  gridNavigator: {fileID: 0}
-  gridManager: {fileID: 0}
-  myRow: 0
-  myCol: 0

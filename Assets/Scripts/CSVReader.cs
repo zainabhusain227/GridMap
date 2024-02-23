@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using System;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class SublistData
 {
@@ -12,18 +13,21 @@ public class SublistData
     public int Column { get; set; }
 }
 
-public class CSVReaderFinal : MonoBehaviour
+public class CSVReader : MonoBehaviour
 {
-    public TextAsset csvFile; // Reference to your .csv file (drag and drop it in the Unity inspector)
+    private TextAsset csvFile; // Reference to your .csv file (drag and drop it in the Unity inspector)
     public string[,] dataArray;
     public GridManager gridManager;
-    public SoundManager soundManager;  // Reference to your SoundManager script.
 
+    public CSVLoader csvLoader;
+    public UAP_AccessibilityManager uap; 
     //public List<string> mapItems = new List<string>();
 
     public List<string> mainList = new List<string>();
     public Dictionary<string, List<string>> subLists = new Dictionary<string, List<string>>();
     public Dictionary<string, Tuple<int, int>> subListPositions = new Dictionary<string, Tuple<int, int>>();
+    // New dictionary for the third level sublist
+    public Dictionary<string, List<string>> subSubLists = new Dictionary<string, List<string>>();
 
     public AudioClip train_station_ambient;
     public AudioClip bank_booth;
@@ -35,19 +39,18 @@ public class CSVReaderFinal : MonoBehaviour
     public AudioClip ticket_scan_main;
     public AudioClip washroom_ambient;
 
-
-
     public List<GameObject> ListofGridsWithAmbient;
-    //public List<int[]> ListofGridsWithAmbient = new List<int[]>();
-
 
     void Start()
     {
-        LoadCSV();
-        //PrintMain_SubList();
-        //PrintSubListPositions();
-    }
+        uap = GameObject.Find("Accessibility Manager").GetComponent<UAP_AccessibilityManager>();
 
+        csvLoader = GameObject.FindWithTag("CSVLoader").GetComponent<CSVLoader>();
+     
+        csvFile = csvLoader.loadedCSV;
+
+        LoadCSV();
+    }
     void LoadCSV()
     {
         if (csvFile != null)
@@ -55,12 +58,9 @@ public class CSVReaderFinal : MonoBehaviour
             string[] lines = csvFile.text.Split('\n');
             int numRows = lines.Length - 1; // for some reason, converting from excel to CSV adds an extra line ***************************************** may have to subtract 1 or not
             int numCols = lines[0].Split(',').Length;
-            //Debug.Log("Total number of Rows: " + numRows);
-            //Debug.Log("Total number of Columns: " + numCols);
-            gridManager.rows = numRows;
-            gridManager.columns = numCols;
-
-
+            Debug.Log("Total number of Rows: " + numRows);
+            Debug.Log("Total number of Columns: " + numCols);
+            gridManager.setGridSize(numRows, numCols); 
             dataArray = new string[numRows, numCols];
 
             for (int i = 0; i < numRows; i++)
@@ -70,64 +70,50 @@ public class CSVReaderFinal : MonoBehaviour
                 for (int j = 0; j < numCols; j++)
                 {
                     dataArray[i, j] = row[j];
-                    gridManager.SetText(i, j, dataArray[i, j]); //gets rows and colums from csv file
-                    if (dataArray[i, j].Contains("*"))
+                    gridManager.SetText(i, j, dataArray[i, j]);
+
+                    StringParser parser = new StringParser();
+                    Dictionary<string, string> parsedData = parser.ParseString(dataArray[i, j]);
+
+                    if ((parsedData.TryGetValue("beacon", out string beaconValue)))
                     {
-                        //make a list of audioclip locations, track the grid locations that have the audio source
-                        string[] substring = dataArray[i, j].Split("*");
-                        //Debug.Log(substring[0]);
-                        Debug.Log(substring[1]);
-
-                        //string[] filename_radius= substring[1].Split("@");
-
-                        //string filename = filename_radius[0];
-                        //string radius = filename_radius[1];
-                        //Debug.Log(filename);
-                        //Debug.Log(radius);
-
-                        //float radius_f= (float)Convert.ToDouble(radius);
-                        //Debug.Log(radius_f);
-                        //gridManager.grid[i, j].GetComponent<AudioSource>().clip = filename;
-                        //substring[1] = GetStringBeforeAt(substring[1]);
-                        Debug.Log("Sub string 1 = " + substring[1]);
-
-                        if (substring[1] == "train_station_ambient")
+                        if (beaconValue == "train_station_ambient")
                         {
-                            //if(substring[1] == "Train_station_sound"){
+                            
                             gridManager.grid[i, j].GetComponent<AudioSource>().clip = train_station_ambient;
-                            //Debug.Log("found train");
+      
                         }
-                        else if (substring[1] == "bank_booth")
-                        {//if(substring[1] == "Train_station_sound"){
+                        else if (beaconValue == "bank_booth")
+                        {
                             gridManager.grid[i, j].GetComponent<AudioSource>().clip = bank_booth;
                         }
-                        else if (substring[1] == "elevator")
-                        {//if(substring[1] == "Train_station_sound"){
+                        else if (beaconValue == "elevator")
+                        {
                             gridManager.grid[i, j].GetComponent<AudioSource>().clip = elevator;
                         }
-                        else if (substring[1] == "escalator")
-                        {//if(substring[1] == "Train_station_sound"){
+                        else if (beaconValue == "escalator")
+                        {
                             gridManager.grid[i, j].GetComponent<AudioSource>().clip = escalator;
                         }
-                        else if (substring[1] == "mall_sound")
-                        {//if(substring[1] == "Train_station_sound"){
+                        else if (beaconValue == "mall_sound")
+                        {
                             gridManager.grid[i, j].GetComponent<AudioSource>().clip = mall_sound;
                         }
-                        else if (substring[1] == "street_bg")
-                        {//if(substring[1] == "Train_station_sound"){
+                        else if (beaconValue == "street_bg")
+                        {
                             gridManager.grid[i, j].GetComponent<AudioSource>().clip = street_bg;
-                       
+
                         }
-                        else if (substring[1] == "ticket_counter")
-                        {//if(substring[1] == "Train_station_sound"){
+                        else if (beaconValue == "ticket_counter")
+                        {
                             gridManager.grid[i, j].GetComponent<AudioSource>().clip = ticket_counter;
                         }
-                        else if (substring[1] == "ticket_scan_main")
-                        {//if(substring[1] == "Train_station_sound"){
+                        else if (beaconValue == "ticket_scan_main")
+                        {
                             gridManager.grid[i, j].GetComponent<AudioSource>().clip = ticket_scan_main;
                         }
-                        else if (substring[1] == "washroom_ambient")
-                        {//if(substring[1] == "Train_station_sound"){
+                        else if (beaconValue == "washroom_ambient")
+                        {
                             gridManager.grid[i, j].GetComponent<AudioSource>().clip = washroom_ambient;
                         }
                         else //if the item has no sound assigned to it, disable it to save on resources
@@ -135,15 +121,30 @@ public class CSVReaderFinal : MonoBehaviour
                             gridManager.grid[i, j].GetComponent<AudioSource>().enabled = false;
                             gridManager.grid[i, j].GetComponent<SoundManager>().enabled = false;
                         }
-
-                        //gridManager.grid[i, j].GetComponent<SoundManager>().max_distance = radius_f;
                         gridManager.grid[i, j].GetComponent<SoundManager>().myRow = i;
                         gridManager.grid[i, j].GetComponent<SoundManager>().myCol = j;
+
+                        if (parsedData.TryGetValue("srange", out string srangeValue))
+                        {
+                            // Try to convert the srange value to an integer
+                            if (float.TryParse(srangeValue, out float srange))
+                            {
+
+                                // If successful, set the max distance with the integer value
+                                //convert srange to float to make sure the function can take it 
+                                float srange_f = (float)srange;
+                                gridManager.grid[i, j].GetComponent<SoundManager>().setMaxDistance(srange_f);
+                            }
+                        }
                         ListofGridsWithAmbient.Add(gridManager.grid[i, j]);
+                    }
+                    else
+                    {
+                        //Debug.Log("No sound file");
                     }
 
 
-                    //find if theres an asterisk, 
+
                     //AppendIfNotExists(dataArray[i, j], i, j);
                     StoreStrings(dataArray[i, j], i, j);
                 }
@@ -165,40 +166,49 @@ public class CSVReaderFinal : MonoBehaviour
     }
     public void StoreStrings(string inputString, int row, int column)
     {
-        if (inputString.Contains(";"))
+        StringParser parser = new StringParser();
+        Dictionary<string, string> parsedData = parser.ParseString(inputString);
+        if (parsedData.TryGetValue("level1h", out string level1h))
         {
-            string[] substrings = inputString.Split(';');
-            //Debug.Log(substrings[0] + " | " + substrings[1]);
-            if (substrings.Length >= 2)
+            // Store in main list
+            if (!mainList.Contains(level1h))
             {
-                string mainItem = substrings[0];
-                string subItem = substrings[1];
-
-                // Store in main list
-                if (!mainList.Contains(mainItem))
-                {
-                    mainList.Add(mainItem);
-                }
-
+                mainList.Add(level1h);
+            }
+            if (parsedData.TryGetValue("level2h", out string level2h))
+            {
+                //Debug.Log(level2h);
                 // Store in sublist
-                if (!subLists.ContainsKey(mainItem))
+                if (!subLists.ContainsKey(level1h))
                 {
-                    subLists[mainItem] = new List<string>();
+                    subLists[level1h] = new List<string>();
                 }
-                if (!subLists[mainItem].Contains(subItem))
+                if (!subLists[level1h].Contains(level2h))
                 {
-                    subLists[mainItem].Add(subItem);
-                    subListPositions[subItem] = Tuple.Create(row, column);
-
+                    subLists[level1h].Add(level2h);
+                    subListPositions[level2h] = Tuple.Create(row, column);
+                }
+                // Assuming there's a third level identifier in your parsed data
+                if (parsedData.TryGetValue("level3h", out string level3h))
+                {
+                    // Ensure the container for this level 2 header exists
+                    if (!subSubLists.ContainsKey(level2h))
+                    {
+                        subSubLists[level2h] = new List<string>();
+                    }
+                    // Add the level 3 header if it's not already present
+                    if (!subSubLists[level2h].Contains(level3h))
+                    {
+                        subSubLists[level2h].Add(level3h);
+                        // If you need to store additional data for level 3 items, consider using a more complex structure here
+                    }
                 }
             }
             else
             {
-                // Handle invalid input
-                Console.WriteLine("Invalid input string format.");
+                Debug.Log("No level2h index found");
             }
         }
-
     }
     public void PrintMain_SubList()
     {
@@ -234,21 +244,5 @@ public class CSVReaderFinal : MonoBehaviour
 
            Debug.Log($"Key: {key}, Value: ({firstValue}, {secondValue})");
         }
-    }
-    public string GetStringBeforeAt(string input)
-    {
-        if (string.IsNullOrEmpty(input))
-        {
-            return "";
-        }
-
-        int atIndex = input.IndexOf('@');
-
-        if (atIndex == -1)
-        {
-            return input; // No '@' character found, return the whole string.
-        }
-
-        return input.Substring(0, atIndex);
     }
 }

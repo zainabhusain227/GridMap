@@ -12,6 +12,12 @@ public class CSVLoader : MonoBehaviour
     // Singleton instance
     public static CSVLoader Instance;
     public TextAsset loadedCSV;
+    public TextAsset previousCSV; 
+    public int zoomInRow;
+    public int zoomInColumn;
+
+    public int zoomOutRow;
+    public int zoomOutColumn;
     void Awake()
     {
         // Check if an instance already exists
@@ -32,6 +38,32 @@ public class CSVLoader : MonoBehaviour
     {
         LoadCSVTextAssets();
     }
+    public void setMapPosition_In(int row, int column)
+    {
+        zoomInColumn = column;
+        zoomInRow = row;
+    }
+    public TextAsset returnCurrentCSV()
+    {
+        return loadedCSV;
+    }
+    public void setCurrentCSV(TextAsset csvTextAsset)
+    {
+        loadedCSV = csvTextAsset;
+    }
+    public void clearPreviousCSV()
+    {
+        previousCSV = null;
+    }
+    public TextAsset returnPreviousCSV()
+    {
+        return previousCSV;
+    }
+    public void setMapPosition_Out(int row, int column)
+    {
+        zoomOutColumn = column;
+        zoomOutRow = row;
+    }
 
     public void LoadCSVTextAssets()
     {
@@ -43,22 +75,24 @@ public class CSVLoader : MonoBehaviour
         // Optionally, print the names of the loaded TextAssets to verify
         foreach (TextAsset textAsset in csvTextAssets)
         {
-            Debug.Log(textAsset.name);
+            //Debug.Log(textAsset.name);
         }
     }
     public void changeCSVFile(string name)
     {
-        Debug.Log("!!!!!!!!!!!!!!" + name);
-        loadedCSV = FindCSVByName(name.Replace(" ", ""));
+        TextAsset currentTextAssetFileToRemember;
+        currentTextAssetFileToRemember = loadedCSV; 
+        previousCSV = currentTextAssetFileToRemember;
+
+        name = RemoveAllWhitespace(name);
+        loadedCSV = FindCSVByName(name);
     }
     TextAsset FindCSVByName(string name) //string name
     {
-        name = RemoveAllWhitespace(name);
-        Debug.Log("name == " + name);
         foreach (TextAsset csv in csvTextAssets)
         {
-            Debug.Log(csv.name);
-            if (csv.name == name)
+            Debug.Log(csv.name + " || " + name);
+            if (csv.name + ".csv" == name)
                 return csv;
         }
         Debug.LogWarning("CSV with name " + name + " not found.");

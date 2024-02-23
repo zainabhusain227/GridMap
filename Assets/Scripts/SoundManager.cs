@@ -9,7 +9,7 @@ public class SoundManager : MonoBehaviour
     public GameObject cTTS;
     public Vector3 AmbientVect;
 
-    public CSVReaderFinal CVSR;
+    public CSVReader CVSR;
 
     public GridNavigator gridNavigator;
 
@@ -18,12 +18,12 @@ public class SoundManager : MonoBehaviour
     public int myRow;
     public int myCol;
 
-    //public float max_distance;
+    public float max_distance = 5;
 
     // Start is called before the first frame update
     void Start()
     {
-        CVSR = GameObject.Find("MainFrame and Controller").GetComponent<CSVReaderFinal>();
+        CVSR = GameObject.Find("MainFrame and Controller").GetComponent<CSVReader>();
         gridNavigator = GameObject.Find("MainFrame and Controller").GetComponent<GridNavigator>();
         gridManager = GameObject.Find("Grid Manager").GetComponent<GridManager>();
         
@@ -53,7 +53,6 @@ public class SoundManager : MonoBehaviour
         //gridManager.grid[CVSR.ListofGridsWithAmbient[0][0], CVSR.ListofGridsWithAmbient[0][1]].GetComponent<AudioSource>().clip = trainSound;
         if (this.gameObject.GetComponent<AudioSource>().clip != null)
         {
-            float max_distance = 5;
             //hardcoded for now
             //float ambient_row = ; //CVSR.ListofGridsWithAmbient[0].transform.position.x
             //float ambient_col = 8; //CVSR.ListofGridsWithAmbient[0].transform.position.y)
@@ -142,6 +141,12 @@ public class SoundManager : MonoBehaviour
         angleDegrees = (angleDegrees + 360) % 360;
 
         return angleDegrees;
+    }
+    public void setMaxDistance(float number)
+    {
+        max_distance = number;
+        Debug.Log("max_dist= " + max_distance);
+
     }
 
     float MapAngleToPanning(float angle)

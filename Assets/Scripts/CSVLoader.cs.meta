@@ -3,19 +3,7 @@ guid: d17389d29875b2748848b9edd933bc4d
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - csvFile: {instanceID: 0}
-  - gridManager: {instanceID: 0}
-  - soundManager: {instanceID: 0}
-  - train_station_ambient: {fileID: 8300000, guid: 3f84646a80644c8499c2b4fe7a484add, type: 3}
-  - bank_booth: {fileID: 8300000, guid: b4339f31cef3f1a48b5ec99d0d45be96, type: 3}
-  - elevator: {fileID: 8300000, guid: c3960380e50e8614fab7f30eea071f73, type: 3}
-  - escalator: {fileID: 8300000, guid: 94b7eb4d76881d44ba63618595917329, type: 3}
-  - mall_sound: {fileID: 8300000, guid: ce4ba84f59754da48b356c083ad78b8b, type: 3}
-  - street_bg: {fileID: 8300000, guid: 70bfa2bd872f75440a296d6f047fa955, type: 3}
-  - ticket_counter: {fileID: 8300000, guid: 7141c8a3462e196439b1e7a626e5f929, type: 3}
-  - ticket_scan_main: {fileID: 8300000, guid: 734d1298340f77f46967d682c4ad824a, type: 3}
-  - washroom_ambient: {fileID: 8300000, guid: e77054bd20f40044799fce7d985d44f3, type: 3}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

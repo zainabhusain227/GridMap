@@ -1,13 +1,16 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 
 public class GridManager : MonoBehaviour
 {
     public GameObject[,] grid;    // 2D array to store cube game objects.
     public GameObject cubePrefab;  // The cube prefab you want to use.
-    public GridNavigator gridNavigator;
     public int rows = 5;           // Number of rows in the grid.
     public int columns = 5;        // Number of columns in the grid.
     public string coord;        // Number of columns in the grid.
@@ -19,15 +22,19 @@ public class GridManager : MonoBehaviour
     // assign the coordinates and scale values 
     public void Start()
     {
-        CreateGrid();
-        this.gameObject.transform.localPosition = new Vector3(-857f, 694f,0f);
-        //this.gameObject.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+        //CreateGrid();
+        uap = GameObject.Find("Accessibility Manager").GetComponent<UAP_AccessibilityManager>();
+        this.gameObject.transform.localPosition = new Vector3(-857f, 894f,0f);
         //StartCoroutine(resetGridPosition());
+    }
+    public void setGridSize(int i, int j)
+    {
+        rows = i; columns = j;
+        CreateGrid();   
     }
 
     public void CreateGrid()
     {
-        
         grid = new GameObject[rows, columns];
 
         // Calculate the size of each cube based on the canvas size and grid dimensions.
@@ -83,33 +90,26 @@ public class GridManager : MonoBehaviour
     {
         grid[row, column].gameObject.GetComponent<Image>().color = Color.red;
         string originalText = grid[row, column].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
-        int delimiterIndex = originalText.IndexOfAny(new char[] { ';', '#' });
 
-        if (delimiterIndex != -1)
+        StringParser parser = new StringParser();
+        Dictionary<string, string> parsedData = parser.ParseString(originalText);
+
+        if ((parsedData.TryGetValue("textAppears", out string textAppears)) && (parsedData.TryGetValue("warpfile", out string warpfile)))
         {
-            char foundDelimiter = originalText[delimiterIndex];
+            int dotIndex = parsedData["warpfile"].IndexOf('.');
+            string substringWarpFile = parsedData["warpfile"].Substring(0, dotIndex);
 
-            // Extract the text after the delimiter
-            string textAfterDelimiter = originalText.Substring(delimiterIndex + 1).Trim();
-
-            // Use the extracted text or perform operations as needed
-            uap.Saysomething(textAfterDelimiter);
-
-            // If you want to know which delimiter was found, use foundDelimiter
-            // For example:
-            // Console.WriteLine("Delimiter found: " + foundDelimiter);
-            gridNavigator.UpdateAllSoundManagers(row, column);
+            uap.Saysomething(parsedData["textAppears"] + ". Press enter to move to " + substringWarpFile);
+        }
+        else if (parsedData.TryGetValue("textAppears", out string nameValue))
+        {
+            uap.Saysomething(parsedData["textAppears"]);
         }
         else
         {
-            /*if (grid[row, column].transform.GetChild(0).GetComponent<TextMeshProUGUI>().text != originalText)
-            {
-                break;
-            }*/
-
-            uap.Saysomething(grid[row, column].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
-
+            Debug.Log("Nothing to speak out");
         }
+
     }
     public void defocusOnPreviousGrid(int row, int column)
     {
@@ -164,34 +164,18 @@ public class GridManager : MonoBehaviour
         {
             // following is the new code
             string originalText = grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
-            int delimiterIndex = originalText.IndexOfAny(new char[] { ';', '#' });
 
-            if (delimiterIndex != -1)
+            StringParser parser = new StringParser();
+            Dictionary<string, string> parsedData = parser.ParseString(originalText);
+
+            if (parsedData.TryGetValue("textAppears", out string nameValue))
             {
-                char foundDelimiter = originalText[delimiterIndex];
-
-                // Extract the text after the delimiter
-                string textAfterDelimiter = originalText.Substring(delimiterIndex + 1).Trim();
-
-                // Use the extracted text or perform operations as needed
-                uap.Saysomething(textAfterDelimiter);
-
-                // If you want to know which delimiter was found, use foundDelimiter
-                // For example:
-                // Console.WriteLine("Delimiter found: " + foundDelimiter);
+                uap.Saysomething(parsedData["textAppears"]);
             }
             else
             {
-                uap.Saysomething(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
-
+                Debug.Log("Nothing to speak out [SpeakAroundMe]");
             }
-
-
-            /* original code
-            //uap.Saysomething(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
-            uap.Saysomething3D(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text, position);
-            Debug.Log(grid[row, cols].gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
-            */
         }
 
     }
